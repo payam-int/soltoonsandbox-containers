@@ -6,14 +6,15 @@ import java.util.*;
 public class GameBoard implements Serializable{
    private Cell[][] cells;
    protected int height, width;
-   protected Map<Long,GameObject> id2object;
+   protected HashMap<Long,GameObject> id2object;
    protected Long myID;
    protected HashMap<Long,Integer> playerID2money;
-   protected Map<Long,Integer> playerID2moneyPerTurn;
-   protected Map<Long,Long> id2owner;
-   protected Map<Long,Integer> playerID2penalty;
-   protected Map<Long,List<Long> > playerID2ids;
-   protected Set<Long> playerIDs;
+   protected HashMap<Long,Integer> playerID2moneyPerTurn;
+   protected HashMap<Long,Long> id2owner;
+   protected HashMap<Long,Integer> playerID2penalty;
+   protected HashMap<Long,List<Long> > playerID2ids;
+   protected TreeSet<Long> playerIDs;
+   private Integer board = 0;
 
    protected GameBoard(int h, int w) {
       height = h;
@@ -83,5 +84,9 @@ public class GameBoard implements Serializable{
 
    public Set<Long> getPlayerIDs() {
       return playerIDs;
+   }
+
+   public void inc() {
+      this.board++;
    }
 }

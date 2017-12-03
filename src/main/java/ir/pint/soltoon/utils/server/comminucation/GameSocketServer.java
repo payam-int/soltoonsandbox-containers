@@ -1,6 +1,8 @@
 package ir.pint.soltoon.utils.server.comminucation;
 
+import ir.pint.soltoon.soltoongame.shared.communication.Comminucation;
 import ir.pint.soltoon.utils.server.exceptions.ClientNotFoundException;
+import ir.pint.soltoon.utils.shared.data.ConnectionResult;
 import ir.pint.soltoon.utils.shared.exceptions.SoltoonContainerException;
 
 import java.io.IOException;
@@ -13,12 +15,13 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GameSocketServer {
     private ServerSocket serverSocket;
-    private boolean secureSocket;
     private Map<String, Integer> keys;
 
-    private GameSocketServer(int port) throws IOException {
-        serverSocket = new ServerSocket(port);
-        serverSocket.setReuseAddress(true);
+    public GameSocketServer(int port) throws IOException {
+        this.serverSocket = new ServerSocket(port);
+        this.serverSocket.setReuseAddress(true);
+        this.serverSocket.setSoTimeout(Comminucation.SERVER_ACCEPT_TIMEOUT);
+        this.keys = null;
     }
 
     public GameSocketServer(int port, Map<String, Integer> keys) throws IOException {
@@ -55,25 +58,29 @@ public class GameSocketServer {
         ObjectInputStream objectInputStream = new ObjectInputStream(accept.getInputStream());
         ObjectOutputStream objectOutputStream = new ObjectOutputStream(accept.getOutputStream());
 
-        if (secureSocket) {
+        if (keys != null) {
             String key = null;
             try {
                 key = (String) objectInputStream.readObject();
             } catch (Exception e) {
-
+                // ignore
             }
 
             if (keys.getOrDefault(key, 0) > 0) {
                 keys.put(key, keys.get(key) - 1);
-
+                objectOutputStream.writeObject(new ConnectionResult(true));
+                objectOutputStream.flush();
                 return new GameClient(accept, objectOutputStream, objectInputStream, key);
             } else {
                 throw new ClientNotFoundException(key, accept.getInetAddress().getHostAddress());
             }
         } else {
+            objectOutputStream.writeObject(new ConnectionResult(true));
+            objectOutputStream.flush();
             return new GameClient(accept, objectOutputStream, objectInputStream);
         }
     }
+
 
 
 }

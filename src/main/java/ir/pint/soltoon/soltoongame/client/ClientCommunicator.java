@@ -4,6 +4,7 @@ import ir.pint.soltoon.utils.clients.comminucation.GameSocket;
 import ir.pint.soltoon.soltoongame.shared.communication.command.Command;
 import ir.pint.soltoon.soltoongame.shared.communication.query.Query;
 import ir.pint.soltoon.soltoongame.shared.communication.result.Result;
+import ir.pint.soltoon.utils.shared.facades.ResultStorage;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -28,10 +29,8 @@ public class ClientCommunicator {
             out.writeObject(command);
             out.flush();
             result = (Result) in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            ResultStorage.addException(e);
         }
         return result;
     }
@@ -40,10 +39,8 @@ public class ClientCommunicator {
         Query query = null;
         try {
             query = (Query) in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            ResultStorage.addException(e);
         }
         return query;
     }

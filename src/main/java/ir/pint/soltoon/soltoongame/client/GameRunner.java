@@ -1,5 +1,7 @@
 package ir.pint.soltoon.soltoongame.client;
 
+import ir.pint.soltoon.soltoongame.shared.communication.Comminucation;
+import ir.pint.soltoon.soltoongame.shared.communication.query.QueryExit;
 import ir.pint.soltoon.utils.clients.comminucation.GameSocket;
 import ir.pint.soltoon.utils.clients.proxy.ThreadProxy;
 import ir.pint.soltoon.utils.clients.proxy.TimeLimitConfig;
@@ -13,11 +15,13 @@ import ir.pint.soltoon.soltoongame.shared.communication.result.Result;
 import ir.pint.soltoon.soltoongame.shared.communication.result.Status;
 import ir.pint.soltoon.soltoongame.shared.data.Agent;
 import ir.pint.soltoon.soltoongame.shared.data.Player;
+import ir.pint.soltoon.utils.shared.facades.ResultStorage;
 
 import java.util.Map;
 import java.util.Random;
 
 public class GameRunner {
+    private static final int MAX_NULL_QUERIES = 5;
     private TimeLimitConfig timeLimitConfig;
     private SoltoonInterface ai;
     private GameSocket gameSocket;
@@ -47,11 +51,21 @@ public class GameRunner {
 
         timeLimitConfig.setTimeLimit(1000);
         timeLimitConfig.setExtraTimeLimit(500);
-        for (Query query; (query = clientCommunicator.receiveQuery()) != null; ) {
+
+        int nullQueries = -1;
+        for (Query query = null; nullQueries < MAX_NULL_QUERIES; query = clientCommunicator.receiveQuery()) {
+            if (query == null) {
+                nullQueries++;
+                continue;
+            }
+
+            if (query instanceof QueryExit)
+                break;
+
             Command command = ai.handleQuery(query);
-            clientCommunicator.sendCommand(command);
-            System.out.println(System.currentTimeMillis());
+            Result result = clientCommunicator.sendCommand(command);
         }
+        ResultStorage.save();
     }
 
     private void initialize() throws Exception {
@@ -61,7 +75,8 @@ public class GameRunner {
             throw new InvalidQueryException();
         }
 
-        timeLimitConfig.setTimeLimit(Integer.MAX_VALUE);
+        timeLimitConfig.setTimeLimit(Comminucation.CLIENT_ROUND_TIME);
+        timeLimitConfig.setExtraTimeLimit(Comminucation.CLIENT_ROUND_EXTRA);
 
         Map<Long, Agent> id2ai = ai.getId2ai();
 

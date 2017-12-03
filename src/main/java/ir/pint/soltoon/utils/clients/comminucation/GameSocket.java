@@ -53,8 +53,8 @@ public class GameSocket {
 
     private void init() throws Exception {
         socket = new Socket(host, port);
-        objectInputStream = new ObjectInputStream(socket.getInputStream());
         objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+        objectInputStream = new ObjectInputStream(socket.getInputStream());
 
         if (key != null)
             objectOutputStream.writeObject(key);

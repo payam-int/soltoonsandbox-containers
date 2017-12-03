@@ -1,5 +1,6 @@
 package ir.pint.soltoon.soltoongame.client;
 
+import ir.pint.soltoon.soltoongame.shared.communication.result.Result;
 import ir.pint.soltoon.utils.clients.ai.Game;
 import ir.pint.soltoon.soltoongame.shared.communication.command.Command;
 import ir.pint.soltoon.soltoongame.shared.communication.command.CommandAction;
@@ -16,6 +17,12 @@ import java.util.Map;
 
 public class SoltoonGame extends Game implements SoltoonInterface {
     private Map<Long, Agent> id2ai = new Hashtable<>();
+
+
+    @Override
+    public void setResult(Result result, Query query, Command command) {
+
+    }
 
     @Override
     public Command handleQuery(Query query) {

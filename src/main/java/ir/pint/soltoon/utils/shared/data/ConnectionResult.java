@@ -1,6 +1,8 @@
 package ir.pint.soltoon.utils.shared.data;
 
-public final class ConnectionResult {
+import java.io.Serializable;
+
+public final class ConnectionResult implements Serializable {
     private boolean established;
 
     public ConnectionResult(boolean established) {
