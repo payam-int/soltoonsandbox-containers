@@ -112,9 +112,9 @@ class Decode{
 ### Trusted Classes
 A class(or onterface) is trusted if one of these conditions happen:
 * It is primitive 
-* It is Map, Array or List 
+* It is a Map, an Array or a List 
 * It is annotated with `@Secure`
-* It's superclass or implemented interafces is trusted.
+* Its superclass or implemented interfaces are trusted.
 
 #### Define trusted class:
 ```java
