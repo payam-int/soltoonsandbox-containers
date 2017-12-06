@@ -1,7 +1,10 @@
 package ir.pint.soltoon.soltoongame.shared.data.map;
 
+import ir.pint.soltoon.utils.shared.facades.json.Secure;
+
 import java.io.Serializable;
 
+@Secure
 public final class Cell implements Serializable{
 
     private int x, y;

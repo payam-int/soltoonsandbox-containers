@@ -1,5 +1,6 @@
 package ir.pint.soltoon.utils.shared.exceptions;
 
+// @todo add exceptions
 public class SoltoonContainerException extends Exception {
     public SoltoonContainerException() {
     }

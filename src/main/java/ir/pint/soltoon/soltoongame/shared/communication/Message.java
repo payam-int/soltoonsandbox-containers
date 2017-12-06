@@ -6,9 +6,17 @@ import java.io.Serializable;
  * Created by amirkasra on 9/28/2017 AD.
  */
 public abstract class Message implements Serializable {
-    public Long id;
-    
-    public Message(Long id) {
-        this.id = id;
+    private long request;
+
+    public Message(long request) {
+        this.request = request;
+    }
+
+    public long getRequest() {
+        return request;
+    }
+
+    public void setRequest(long request) {
+        this.request = request;
     }
 }

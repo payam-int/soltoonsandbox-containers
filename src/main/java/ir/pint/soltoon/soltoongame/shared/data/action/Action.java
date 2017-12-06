@@ -1,10 +1,12 @@
 package ir.pint.soltoon.soltoongame.shared.data.action;
 
-import ir.pint.soltoon.soltoongame.server.CoreGameBoard;
-import ir.pint.soltoon.utils.shared.facades.EventLog;
+import ir.pint.soltoon.soltoongame.server.ServerGameBoard;
+import ir.pint.soltoon.utils.shared.facades.json.Secure;
+import ir.pint.soltoon.utils.shared.facades.result.EventLog;
 
 import java.io.Serializable;
 
+@Secure
 public abstract class Action implements Serializable, EventLog {
     private String name;
     private long creator;
@@ -38,5 +40,5 @@ public abstract class Action implements Serializable, EventLog {
         this.createTimestamp = createTimestamp;
     }
 
-    public abstract boolean execute(CoreGameBoard gb, long playerId);
+    public abstract boolean execute(ServerGameBoard gb, long playerId);
 }

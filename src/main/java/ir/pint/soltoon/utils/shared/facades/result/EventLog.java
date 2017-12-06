@@ -1,4 +1,4 @@
-package ir.pint.soltoon.utils.shared.facades;
+package ir.pint.soltoon.utils.shared.facades.result;
 
 public interface EventLog {
     long getCreateTimestamp();

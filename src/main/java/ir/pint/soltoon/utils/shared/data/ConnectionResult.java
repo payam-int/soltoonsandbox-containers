@@ -1,9 +1,12 @@
 package ir.pint.soltoon.utils.shared.data;
 
+import ir.pint.soltoon.utils.shared.facades.json.Secure;
+
 import java.io.Serializable;
 
+@Secure
 public final class ConnectionResult implements Serializable {
-    private boolean established;
+    private Boolean established;
 
     public ConnectionResult(boolean established) {
         this.established = established;

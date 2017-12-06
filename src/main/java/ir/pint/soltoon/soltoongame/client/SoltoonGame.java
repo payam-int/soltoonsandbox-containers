@@ -15,6 +15,7 @@ import ir.pint.soltoon.soltoongame.shared.data.action.AddAgent;
 import java.util.Hashtable;
 import java.util.Map;
 
+// @todo temporary return and remaining time
 public class SoltoonGame extends Game implements SoltoonInterface {
     private Map<Long, Agent> id2ai = new Hashtable<>();
 

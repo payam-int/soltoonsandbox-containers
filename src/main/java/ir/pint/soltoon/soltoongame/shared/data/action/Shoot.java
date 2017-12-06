@@ -1,8 +1,8 @@
 package ir.pint.soltoon.soltoongame.shared.data.action;
 
-import ir.pint.soltoon.soltoongame.server.CoreGameBoard;
+import ir.pint.soltoon.soltoongame.server.ServerGameBoard;
 import ir.pint.soltoon.soltoongame.shared.data.map.*;
-import ir.pint.soltoon.utils.shared.facades.ResultStorage;
+import ir.pint.soltoon.utils.shared.facades.result.ResultStorage;
 
 public final class Shoot extends Action{
     public final int x,y;
@@ -14,7 +14,7 @@ public final class Shoot extends Action{
     }
 
     @Override
-    public boolean execute(CoreGameBoard gb, long playerId) {
+    public boolean execute(ServerGameBoard gb, long playerId) {
         GameObject o = gb.getObjectByID(gb.getMyID());
         GameObjectType type = o.getClass().getAnnotation(CorrespondingAttributes.class).value();
         Cell target = gb.getCellByIndex(x,y);

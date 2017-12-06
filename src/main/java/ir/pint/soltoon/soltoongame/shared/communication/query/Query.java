@@ -7,8 +7,18 @@ import java.io.Serializable;
 /**
  * Created by amirkasra on 9/28/2017 AD.
  */
-public abstract class Query extends Message implements Serializable{
-    public Query(Long id) {
-        super(id);
+public abstract class Query extends Message implements Serializable {
+    private long target;
+
+    public Query(long target) {
+        super(target);
+    }
+
+    public long getTarget() {
+        return target;
+    }
+
+    public void setTarget(long target) {
+        this.target = target;
     }
 }

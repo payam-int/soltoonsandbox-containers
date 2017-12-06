@@ -7,4 +7,8 @@ public class ResultInitialize extends Result {
     public ResultInitialize(Long id, Status status, HashMap data) {
         super(id, status, data);
     }
+
+    public ResultInitialize(long request, Status status) {
+        super(request, status);
+    }
 }

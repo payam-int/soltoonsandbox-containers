@@ -7,4 +7,8 @@ public class CommandInitialize extends Command {
     public CommandInitialize(Long id) {
         super(id);
     }
+
+    public CommandInitialize(long request, long client) {
+        super(request, client);
+    }
 }

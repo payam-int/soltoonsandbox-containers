@@ -8,6 +8,7 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+// @todo refactor
 public class ThreadProxy implements InvocationHandler {
     private TimeLimitConfig timeLimitConfig;
     private Semaphore lock;
@@ -20,16 +21,16 @@ public class ThreadProxy implements InvocationHandler {
         assignThreadProxyHandler();
     }
 
-    public static <F extends GameInterface> F createBean(Class<? extends Game> beanClass, Class<F> iface, TimeLimitConfig timeLimitConfig) throws IllegalAccessException, InstantiationException {
-        Game game = (Game) beanClass.newInstance();
+    public static <F extends TimeLimitedBean> F createBean(Class beanClass, Class iface, TimeLimitConfig timeLimitConfig) throws IllegalAccessException, InstantiationException {
+        F bean = (F) beanClass.newInstance();
 
-        F gameInterface = (F) Proxy.newProxyInstance(
+        F beanProxied = (F) Proxy.newProxyInstance(
                 ThreadProxy.class.getClassLoader(),
                 new Class[]{iface},
-                new ThreadProxy(game, timeLimitConfig)
+                new ThreadProxy(bean, timeLimitConfig)
         );
 
-        return gameInterface;
+        return beanProxied;
     }
 
     private void assignThreadProxyHandler() {

@@ -1,7 +1,7 @@
 package ir.pint.soltoon.soltoongame.shared.data.action;
 
-import ir.pint.soltoon.soltoongame.server.CoreGameBoard;
-import ir.pint.soltoon.utils.shared.facades.ResultStorage;
+import ir.pint.soltoon.soltoongame.server.ServerGameBoard;
+import ir.pint.soltoon.utils.shared.facades.result.ResultStorage;
 
 public final class Nothing extends Action {
 
@@ -10,7 +10,7 @@ public final class Nothing extends Action {
     }
 
     @Override
-    public boolean execute(CoreGameBoard gb, long playerId) {
+    public boolean execute(ServerGameBoard gb, long playerId) {
         this.setCreator(playerId);
         ResultStorage.addEvent(this);
         return false;

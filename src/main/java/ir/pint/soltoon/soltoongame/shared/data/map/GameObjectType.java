@@ -1,8 +1,11 @@
 package ir.pint.soltoon.soltoongame.shared.data.map;
 
+import ir.pint.soltoon.utils.shared.facades.json.Secure;
+
 /**
  * @author Amirkasra Jalaldoost, Payam Mohammadi
  */
+@Secure
 public enum GameObjectType {
     MUSKETEER, BOMBER, GIANT
     , TOWER, MORTAR, TESLA, INFERNO;

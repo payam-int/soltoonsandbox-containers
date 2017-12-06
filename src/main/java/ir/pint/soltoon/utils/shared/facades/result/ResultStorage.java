@@ -1,11 +1,8 @@
-package ir.pint.soltoon.utils.shared.facades;
+package ir.pint.soltoon.utils.shared.facades.result;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 
-import java.io.BufferedOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -17,11 +14,37 @@ public class ResultStorage {
     private static Queue<MetaLog> metas = new ConcurrentLinkedQueue<>();
     private static ConcurrentMap<String, Object> misc = new ConcurrentHashMap();
     private static OutputStream outputStream = System.out;
+    private static boolean closeStream = false;
     private static Integer resultCode = 0;
 
+    static {
+        initFromEnv();
+    }
 
     public static void init(OutputStream outputStream) {
         ResultStorage.outputStream = outputStream;
+    }
+
+    public static boolean initFromEnv() {
+        String resultStorage = System.getenv("RESULT_STORAGE");
+        if (resultStorage == null)
+            return false;
+
+        File storageFile = new File(resultStorage);
+        try {
+            if (!storageFile.exists())
+                storageFile.createNewFile();
+
+            if (storageFile.canWrite()) {
+                ResultStorage.outputStream = new FileOutputStream(storageFile);
+                closeStream = true;
+                return true;
+            }
+        } catch (IOException e) {
+            // ignore
+        }
+        return false;
+
     }
 
     public static void addException(Exception e) {
@@ -94,19 +117,16 @@ public class ResultStorage {
         }
     }
 
-    public static void save()  {
-        ObjectMapper objectMapper = new ObjectMapper();
+    public static void save() {
+
         ResultObject resultObject = new ResultObject(exceptions, events, metas, misc, resultCode);
-        String s = null;
-        try {
-            s = objectMapper.writeValueAsString(resultObject);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+        String s = new Gson().toJson(resultObject);
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
         try {
             bufferedOutputStream.write(s.getBytes());
             bufferedOutputStream.flush();
+            if (closeStream)
+                bufferedOutputStream.close();
         } catch (IOException e) {
             System.exit(-2);
         }

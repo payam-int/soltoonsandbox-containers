@@ -1,6 +1,6 @@
 package ir.pint.soltoon.soltoongame.client;
 
-import ir.pint.soltoon.soltoongame.shared.communication.Comminucation;
+import ir.pint.soltoon.soltoongame.shared.GameConfig;
 import ir.pint.soltoon.soltoongame.shared.communication.query.QueryExit;
 import ir.pint.soltoon.utils.clients.comminucation.GameSocket;
 import ir.pint.soltoon.utils.clients.proxy.ThreadProxy;
@@ -15,11 +15,11 @@ import ir.pint.soltoon.soltoongame.shared.communication.result.Result;
 import ir.pint.soltoon.soltoongame.shared.communication.result.Status;
 import ir.pint.soltoon.soltoongame.shared.data.Agent;
 import ir.pint.soltoon.soltoongame.shared.data.Player;
-import ir.pint.soltoon.utils.shared.facades.ResultStorage;
+import ir.pint.soltoon.utils.shared.facades.result.ResultStorage;
 
 import java.util.Map;
 import java.util.Random;
-
+// @todo rewrite this shit
 public class GameRunner {
     private static final int MAX_NULL_QUERIES = 5;
     private TimeLimitConfig timeLimitConfig;
@@ -31,7 +31,7 @@ public class GameRunner {
     public GameRunner(Class<SoltoonGame> soltoonGame, Class<? extends Player> myGhoul) throws Exception {
         this.timeLimitConfig = new TimeLimitConfig(10000, 1000);
         this.ai = ThreadProxy.createBean(soltoonGame, SoltoonInterface.class, timeLimitConfig);
-        this.gameSocket = GameSocket.create("127.0.0.1", 9998);
+        this.gameSocket = GameSocket.create("127.0.0.1", 8585);
         this.clientCommunicator = new ClientCommunicator(gameSocket);
         this.firstPlayerClass = myGhoul;
     }
@@ -42,7 +42,7 @@ public class GameRunner {
             gameRunner.start();
         } catch (Exception e) {
             e.printStackTrace();
-            System.exit(1);
+            System.exit(-1);
         }
     }
 
@@ -50,7 +50,7 @@ public class GameRunner {
         initialize();
 
         timeLimitConfig.setTimeLimit(1000);
-        timeLimitConfig.setExtraTimeLimit(500);
+        timeLimitConfig.setinitExtraTimeLimit(500);
 
         int nullQueries = -1;
         for (Query query = null; nullQueries < MAX_NULL_QUERIES; query = clientCommunicator.receiveQuery()) {
@@ -75,15 +75,15 @@ public class GameRunner {
             throw new InvalidQueryException();
         }
 
-        timeLimitConfig.setTimeLimit(Comminucation.CLIENT_ROUND_TIME);
-        timeLimitConfig.setExtraTimeLimit(Comminucation.CLIENT_ROUND_EXTRA);
+        timeLimitConfig.setTimeLimit(GameConfig.CLIENT_ROUND_TIME);
+        timeLimitConfig.setExtraTimeLimit(GameConfig.CLIENT_ROUND_EXTRA);
 
         Map<Long, Agent> id2ai = ai.getId2ai();
 
         Long firstPlayerId = Math.abs(new Random().nextLong());
         Result result = clientCommunicator.sendCommand(new CommandInitialize(firstPlayerId));
 
-        if (result.status == Status.failure) {
+        if (result.status == Status.FAILURE) {
             throw new FailureResultException();
         }
 

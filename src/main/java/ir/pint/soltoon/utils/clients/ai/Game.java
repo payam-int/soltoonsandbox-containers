@@ -1,6 +1,5 @@
 package ir.pint.soltoon.utils.clients.ai;
 
-import ir.pint.soltoon.utils.clients.proxy.GameInterface;
 import ir.pint.soltoon.utils.clients.proxy.ProxyReturnStorage;
 import ir.pint.soltoon.utils.clients.proxy.TimeLimitedBean;
 

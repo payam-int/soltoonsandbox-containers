@@ -1,18 +1,21 @@
 package ir.pint.soltoon.soltoongame.shared.data.map;
 
+import ir.pint.soltoon.utils.shared.facades.json.Secure;
+
 import java.io.Serializable;
 import java.util.*;
 
+@Secure
 public class GameBoard implements Serializable{
    private Cell[][] cells;
    protected int height, width;
    protected HashMap<Long,GameObject> id2object;
    protected Long myID;
-   protected HashMap<Long,Integer> playerID2money;
-   protected HashMap<Long,Integer> playerID2moneyPerTurn;
-   protected HashMap<Long,Long> id2owner;
-   protected HashMap<Long,Integer> playerID2penalty;
-   protected HashMap<Long,List<Long> > playerID2ids;
+   protected HashMap<Long,Integer> playerMoney;
+   protected HashMap<Long,Integer> playerMoneyPerTurn;
+   protected HashMap<Long,Integer> playerPenalty;
+   protected HashMap<Long,List<Long> > playerOwnedIds;
+   protected HashMap<Long,Long> idOwner;
    protected TreeSet<Long> playerIDs;
    private Integer board = 0;
 
@@ -24,11 +27,11 @@ public class GameBoard implements Serializable{
          for (int j=0;j<height;j++)
             cells[i][j] = new Cell(i,j);
       id2object = new HashMap<>();
-      playerID2money = new HashMap<>();
-      playerID2penalty = new HashMap<>();
-      id2owner = new HashMap<>();
-      playerID2moneyPerTurn = new HashMap<>();
-      playerID2ids = new HashMap<>();
+      playerMoney = new HashMap<>();
+      playerPenalty = new HashMap<>();
+      idOwner = new HashMap<>();
+      playerMoneyPerTurn = new HashMap<>();
+      playerOwnedIds = new HashMap<>();
       playerIDs = new TreeSet<>();
    }
    
@@ -51,7 +54,7 @@ public class GameBoard implements Serializable{
    }
 
    public Long getownerByID(Long id) {
-      return id2owner.get(id);
+      return idOwner.get(id);
    }
 
    public Long getMyID() {
@@ -59,16 +62,16 @@ public class GameBoard implements Serializable{
    }
 
    public int getMoneyByID(Long id) {
-      Integer res = playerID2money.get(id);
+      Integer res = playerMoney.get(id);
       return (res==null)?0:res;
    }
    public int getPenaltyByID(Long id) {
-      Integer res = playerID2penalty.get(id);
+      Integer res = playerPenalty.get(id);
       return (res==null)?0:res;
    }
 
    public int getMoneyPerTurn(Long id) {
-      Integer res = playerID2moneyPerTurn.get(id);
+      Integer res = playerMoneyPerTurn.get(id);
       return ((res==null)?0:res);
    }
 
@@ -79,7 +82,7 @@ public class GameBoard implements Serializable{
    }
 
    public List<Long> idsByPlayerID(Long id) {
-      return playerID2ids.get(id);
+      return playerOwnedIds.get(id);
    }
 
    public Set<Long> getPlayerIDs() {

@@ -25,6 +25,7 @@ public class My extends Player {
     @Override
     public Action getAction(GameBoard gb) {
         if (gb.getMoneyByID(id) >= GameObjectType.MUSKETEER.getCost()) {
+
             if (gb.getCellByIndex(0, 0).gameObject == null) {
                 return new AddAgent(new SampleGhoulAgent(GameObjectType.MUSKETEER), 0, 0);
             } else {

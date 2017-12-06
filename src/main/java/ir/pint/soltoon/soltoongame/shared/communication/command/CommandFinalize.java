@@ -7,4 +7,8 @@ public class CommandFinalize extends Command {
     public CommandFinalize(Long id) {
         super(id);
     }
+
+    public CommandFinalize(long request, long client) {
+        super(request, client);
+    }
 }

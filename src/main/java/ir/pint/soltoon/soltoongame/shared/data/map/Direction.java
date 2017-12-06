@@ -1,8 +1,11 @@
 package ir.pint.soltoon.soltoongame.shared.data.map;
 
+import ir.pint.soltoon.utils.shared.facades.json.Secure;
+
 /**
  * Created by amirkasra on 9/29/2017 AD.
  */
+@Secure
 public enum Direction {
     right,left,up,down;
 

@@ -4,11 +4,12 @@ import ir.pint.soltoon.utils.clients.comminucation.GameSocket;
 import ir.pint.soltoon.soltoongame.shared.communication.command.Command;
 import ir.pint.soltoon.soltoongame.shared.communication.query.Query;
 import ir.pint.soltoon.soltoongame.shared.communication.result.Result;
-import ir.pint.soltoon.utils.shared.facades.ResultStorage;
+import ir.pint.soltoon.utils.shared.facades.result.ResultStorage;
 
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+// @todo  
 
 public class ClientCommunicator {
 

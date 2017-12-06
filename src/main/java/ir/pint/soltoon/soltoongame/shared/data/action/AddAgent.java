@@ -1,9 +1,9 @@
 package ir.pint.soltoon.soltoongame.shared.data.action;
 
-import ir.pint.soltoon.soltoongame.server.CoreGameBoard;
+import ir.pint.soltoon.soltoongame.server.ServerGameBoard;
 import ir.pint.soltoon.soltoongame.shared.data.Fighter;
 import ir.pint.soltoon.soltoongame.shared.data.map.GameObject;
-import ir.pint.soltoon.utils.shared.facades.ResultStorage;
+import ir.pint.soltoon.utils.shared.facades.result.ResultStorage;
 
 public final class AddAgent extends Action{
     public final Fighter AI;
@@ -17,7 +17,7 @@ public final class AddAgent extends Action{
     }
 
     @Override
-    public boolean execute(CoreGameBoard gb, long playerId) {
+    public boolean execute(ServerGameBoard gb, long playerId) {
         if (gb.getObjectByID(gb.getMyID())!=null) return true; //GameObject nabashe yevaght
         if (gb.getCellByIndex(x,y).gameObject !=null) return true; // por nabashe yevaght
         if (gb.getMoneyByID(gb.getMyID()) - AI.type.getCost() < 0) {
@@ -37,7 +37,7 @@ public final class AddAgent extends Action{
         gb.decreaseMoneyByID(gb.getMyID(),AI.type.getCost());
 
         GameObject o = AI.type.getFactory(AI.id);
-        CoreGameBoard.giveCellToObject(gb.getCellByIndex(x,y),o);
+        ServerGameBoard.giveCellToObject(gb.getCellByIndex(x,y),o);
         gb.addObject(o);
 //        System.out.println(AI.id+ "-appear-" + x +"," + y + "-" + AI.type + "-" + gb.getMyID());
         this.setCreator(playerId);
