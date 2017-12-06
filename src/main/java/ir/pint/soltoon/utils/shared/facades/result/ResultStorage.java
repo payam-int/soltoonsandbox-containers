@@ -1,6 +1,7 @@
 package ir.pint.soltoon.utils.shared.facades.result;
 
 import com.google.gson.Gson;
+import ir.pint.soltoon.utils.shared.exceptions.EnvironmentVariableNotFound;
 
 import java.io.*;
 import java.util.Queue;
@@ -13,22 +14,30 @@ public class ResultStorage {
     private static Queue<EventLog> events = new ConcurrentLinkedQueue<>();
     private static Queue<MetaLog> metas = new ConcurrentLinkedQueue<>();
     private static ConcurrentMap<String, Object> misc = new ConcurrentHashMap();
-    private static OutputStream outputStream = System.out;
+    private static OutputStream outputStream;
     private static boolean closeStream = false;
     private static Integer resultCode = 0;
 
     static {
-        initFromEnv();
+        init();
+    }
+
+    private static void init() {
+        try {
+            initFromEnv();
+        } catch (EnvironmentVariableNotFound environmentVariableNotFound) {
+            // ignore
+        }
     }
 
     public static void init(OutputStream outputStream) {
         ResultStorage.outputStream = outputStream;
     }
 
-    public static boolean initFromEnv() {
+    public static void initFromEnv() throws EnvironmentVariableNotFound {
         String resultStorage = System.getenv("RESULT_STORAGE");
         if (resultStorage == null)
-            return false;
+            throw new EnvironmentVariableNotFound("RESULT_STORAGE");
 
         File storageFile = new File(resultStorage);
         try {
@@ -38,13 +47,10 @@ public class ResultStorage {
             if (storageFile.canWrite()) {
                 ResultStorage.outputStream = new FileOutputStream(storageFile);
                 closeStream = true;
-                return true;
             }
         } catch (IOException e) {
             // ignore
         }
-        return false;
-
     }
 
     public static void addException(Exception e) {
@@ -118,9 +124,7 @@ public class ResultStorage {
     }
 
     public static void save() {
-
-        ResultObject resultObject = new ResultObject(exceptions, events, metas, misc, resultCode);
-        String s = new Gson().toJson(resultObject);
+        String s = serialze();
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
         try {
             bufferedOutputStream.write(s.getBytes());
@@ -130,5 +134,14 @@ public class ResultStorage {
         } catch (IOException e) {
             System.exit(-2);
         }
+    }
+
+    public static String serialze() {
+        ResultObject resultObject = new ResultObject(exceptions, events, metas, misc, resultCode);
+        return new Gson().toJson(resultObject);
+    }
+
+    public static void setOutputStream(OutputStream outputStream) {
+        ResultStorage.outputStream = outputStream;
     }
 }

@@ -32,6 +32,45 @@
 @jalaldoust 
 
 # Utils
+## ResultStorage
+It provides a structure for storing result of container. this result might be used by `SoltoonServer`.
+
+### Data Types
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| Event | EventLog | Any data that is an event and happening time is important. |
+| Exception | Exception | Any exception |
+| Meta | MetaLog | Any data that is not quite important |
+| Misc | <String, Object> | a key-value property for general use. |
+
+### Usage
+#### Initialization
+By default ResultStorage tries to find storage settings from environment variables (`RESULT_STORAGE`) if it cant it uses `System.out`.
+
+#### PreDestruction
+Before you exit from program you have to call `ResultStorage.save()` to write result data on given `OutputStream`.
+
+#### Examples
+
+```java
+class SomeClass{    
+    public static void main(String[] args){
+        
+        // You can set ResultStorage's OutputStream otherwise when you call save() the json representation of object would be written on System.out.
+        ResultStorage.setOutputStream(someOutputStream); 
+        
+        // ...
+        ResultStorage.addEvent(event);
+        // ...
+        
+        // write result on ouputstream
+        ResultStorage.save();
+    }
+    
+}
+```
+
+
 ## SecureJson
 ### Usage Example
 It provides Serialization/Deserialization services with a simple security check. It only works on [trusted classes](#trusted-classes). 
@@ -90,5 +129,4 @@ class SecureClass{
 
 | Method | Description |
 |--------|-------------|
-| `isSecure` | First call ~ 0.1s <br> First call on new class ~ 0.3ms <br> Duplicate call ~ 0.01ms
-
+| `isSecure` | First call ~ 0.1s <br> First call on new class ~ 0.3ms <br> Duplicate call ~ 0.01ms |
