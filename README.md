@@ -34,6 +34,7 @@
 # Utils
 ## SecureJson
 ### Usage Example
+It provides Serialization/Deserialization services with a simple security check. It only works on [trusted classes](#trusted-classes). 
 #### Encode and decode
 ```java
 @Secure
@@ -69,14 +70,14 @@ class Decode{
     }
 }
 ```
-#### Trusted Classes
+### Trusted Classes
 A class(or onterface) is trusted if one of these conditions happen:
 * It is primitive 
 * It is Map, Array or List 
 * It is annotated with `@Secure`
 * It's superclass or implemented interafces is trusted.
 
-**Define trusted class:**
+#### Define trusted class:
 ```java
 @ir.pint.soltoon.utils.shared.facades.json.Secure
 class SecureClass{
@@ -89,5 +90,5 @@ class SecureClass{
 
 | Method | Description |
 |--------|-------------|
-| `isSecure` | First call ~ 0.1s, First call on new class ~ 0.3ms ~  Duplicate call ~ 0.01ms
+| `isSecure` | First call ~ 0.1s <br> First call on new class ~ 0.3ms <br> Duplicate call ~ 0.01ms
 
