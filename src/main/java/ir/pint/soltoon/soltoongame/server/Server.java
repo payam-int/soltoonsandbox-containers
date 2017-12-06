@@ -11,38 +11,27 @@ import ir.pint.soltoon.utils.shared.exceptions.NoComRemoteAvailable;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 // @todo GameConfig.NUMBER_OF_PLAYERS and Min Env vars
-public class Server {
+public class Server implements Runnable {
 
     public HashMap<Long, Comminucation> comminucationById;
-    private ComServer comServer;
 
+    private ComServer comServer;
+    private List<Long> players;
+    private ServerGameBoard gameBoard;
+    private List<Long> gameObjectIDs;
 
     private Server(ArrayList<ComRemoteInfo> remoteInfo) {
         this.comServer = new ComServer(remoteInfo);
         comminucationById = new HashMap<>();
     }
 
-    public Comminucation init() throws IOException, NoComRemoteAvailable {
-        return comServer.connect();
-    }
 
-    public void closeClient(long uid) {
-        Comminucation comminucation = comminucationById.get(uid);
-        if (comminucation == null)
-            return;
+    
+    @Override
+    public void run() {
 
-        comminucation.close();
-    }
-
-    public Command sendQuery(Query query, long client) throws IOException {
-        Comminucation comminucation = comminucationById.get(client);
-        comminucation.getObjectOutputStream().writeObject(query);
-        return (Command) comminucation.getObjectInputStream().readObject();
-    }
-
-    public void sendResult(Result result, long client) throws IOException {
-        Comminucation comminucation = comminucationById.get(client);
-        comminucation.getObjectOutputStream().writeObject(result);
     }
 }

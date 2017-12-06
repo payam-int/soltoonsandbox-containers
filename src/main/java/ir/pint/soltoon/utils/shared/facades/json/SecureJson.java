@@ -9,7 +9,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-// @todo write test and complete trustedclasses
 public class SecureJson {
     private static final Gson gson;
 
@@ -26,7 +25,10 @@ public class SecureJson {
 
                     @Override
                     public void postSerialize(JsonElement jsonElement, Object secureTransfered, Gson gson) {
-                        if (secureTransfered.getClass().isAnnotationPresent(Secure.class)) {
+                        if (secureTransfered == null)
+                            return;
+
+                        if (SecureJson.haveSpecificObject(secureTransfered.getClass())) {
                             if (secureTransfered.getClass().isAnnotationPresent(SecureConvert.class)) {
                                 Class secureas = secureTransfered.getClass().getAnnotationsByType(SecureConvert.class)[0].value();
                                 jsonElement.getAsJsonObject().addProperty("_class", secureas.getCanonicalName());
@@ -66,6 +68,24 @@ public class SecureJson {
         trustedClasses.addAll(Arrays.asList(String.class, Boolean.class, Character.class, Long.class, Double.class, Integer.class, Byte.class, Float.class, Short.class));
     }
 
+    public static boolean haveSpecificObject(Class<?> aClass) {
+        if (aClass == null)
+            return false;
+
+        return aClass.isAnnotationPresent(Secure.class) || haveSpecificObject(aClass.getInterfaces()) || haveSpecificObject(aClass.getSuperclass());
+    }
+
+    public static boolean haveSpecificObject(Class<?>[] classes) {
+        if (classes == null)
+            return false;
+
+        for (Class c : classes)
+            if (haveSpecificObject(c))
+                return true;
+
+        return false;
+    }
+
     public static String encode(Object object) {
         return gson.toJson(object);
     }
@@ -81,13 +101,23 @@ public class SecureJson {
         boolean secure = declaredClass.isPrimitive() || declaredClass.isArray() || declaredClass.isAnnotationPresent(Secure.class) || trustedClasses.contains(declaredClass);
 
         if (!secure && !untrustedClasses.contains(declaredClass)) {
-            if (isSecure(declaredClass.getSuperclass())) {
+            if (isSecure(declaredClass.getSuperclass()) || isSecure(declaredClass.getInterfaces())) {
                 trustedClasses.add(declaredClass);
             } else {
                 untrustedClasses.add(declaredClass);
             }
+        } else if (secure) {
+            return true;
         }
-        return declaredClass.isPrimitive() || declaredClass.isArray() || declaredClass.isAnnotationPresent(Secure.class) || trustedClasses.contains(declaredClass);
+        return trustedClasses.contains(declaredClass);
+    }
+
+    public static boolean isSecure(Class[] classes) {
+        for (Class c : classes)
+            if (isSecure(c))
+                return true;
+
+        return false;
     }
 
     private static class JsonExclutionStrategy implements ExclusionStrategy {

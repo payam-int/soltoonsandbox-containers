@@ -25,7 +25,69 @@
 
 ## How it works
 
-## Contributors
+## Active maintainers
 
-@payam-int 
-@jalaldoust
+@payam-int (payam.int@gmail.com)
+ 
+@jalaldoust 
+
+# Utils
+## SecureJson
+### Usage Example
+#### Encode and decode
+```java
+@Secure
+class SecureClass{
+    public String text = "hello";
+}
+```
+
+Encode:
+```java
+class Encode{
+    public static void main(String[] args){
+        SecureClass secureClass = new SecureClass();
+        String json = SecureJson.encode(secureClass);
+        
+        System.out.println(json);       
+    }
+}
+```
+```
+{
+    "text": "hello"
+    "_class": "[classname]"
+}
+```
+
+Decode:
+```java
+class Decode{
+    public static void main(String[] args){
+      String json; // JSON String
+      SecureClass secureClass = SecureJson.decode(json, SecureClass.class);
+    }
+}
+```
+#### Trusted Classes
+A class(or onterface) is trusted if one of these conditions happen:
+* It is primitive 
+* It is Map, Array or List 
+* It is annotated with `@Secure`
+* It's superclass or implemented interafces is trusted.
+
+**Define trusted class:**
+```java
+@ir.pint.soltoon.utils.shared.facades.json.Secure
+class SecureClass{
+}
+```
+* Classes and interfaces inherit `@Secure` annotation.
+* You can use `@Secure` annotation on interfaces.
+
+### Performance
+
+| Method | Description |
+|--------|-------------|
+| `isSecure` | First call ~ 0.1s, First call on new class ~ 0.3ms ~  Duplicate call ~ 0.01ms
+
