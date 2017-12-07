@@ -1,6 +1,6 @@
 # SoltoonSandbox - Containers library
 
-![soltoon containers - soltooncontainer 4](https://user-images.githubusercontent.com/4481808/33730879-96bbcd16-db96-11e7-8207-0f58b4f3235a.png)
+![soltoon containers - soltooncontainer 5](https://user-images.githubusercontent.com/4481808/33734875-e17ba540-dba2-11e7-8130-d579b538ff71.png)
 
 
 ## About this document
@@ -11,7 +11,7 @@
 #### Environment Variables
 | Variable name | Target | Description | Example |
 | ------------- | ------ | ----------- | ------- |
-| RESULT_STORAGE | Client & Server |  - | result.txt |
+| RESULT_STORAGE | Client & Server |  - | path/to/result.txt |
 | PORT | Client | - | 127.0.0.1 |
 | PASSWORD | Client | - | `any string`
 | CLIENTS | Server | - | `host:port/password, host:port/password, ...` |
@@ -32,6 +32,9 @@
 
 ## Server/Client Comminucations
 This package helps you make communication between server and clients. It helps you have a secure communication.
+
+### Input size
+Maximum object size to read is 10MB.
 
 ### Example Usages
 

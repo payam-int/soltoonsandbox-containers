@@ -6,12 +6,13 @@ import java.util.List;
 
 import ir.pint.soltoon.utils.shared.data.Data;
 import ir.pint.soltoon.utils.shared.facades.json.SecureJson;
-
-// @todo timelimit and size limit
+// @todo changable inputSize limit
 public class ComInputStream extends DataInputStream implements ObjectInput {
     private byte[] objectSplitter = new byte[8];
     private Socket socket;
     private int timeout = -1;
+
+    private long maxInputSize = 1024 * 1024 * 10;
 
     public ComInputStream(Socket socket, InputStream inputStream) {
         super(inputStream);
@@ -34,6 +35,10 @@ public class ComInputStream extends DataInputStream implements ObjectInput {
         readFully(cname);
 
         int inputSize = readInt();
+
+        if (inputSize > maxInputSize)
+            return null;
+
         byte[] inp = new byte[inputSize];
         readFully(inp);
 
