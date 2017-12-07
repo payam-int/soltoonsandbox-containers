@@ -43,12 +43,15 @@ public class TimeAwareBeanProxy implements InvocationHandler {
         ProxyReturnStorage proxyReturnStorage = new ProxyReturnStorage();
         threadProxyHandler.invoke(new MethodInvoke(proxy, method, args, proxyReturnStorage, timeLimitConfig.getTimeLimit(), lock));
 
+        bean.setDurationType(TimeAwareBean.LEGAL_TIME);
+
         lock.acquire();
 
 
         boolean acquired = false;
 
 
+        bean.setRemainingTime((int) timeLimitConfig.getTimeLimit());
         if (timeLimitConfig.getTimeLimit() < 1) {
             lock.acquire();
             acquired = true;
@@ -59,6 +62,8 @@ public class TimeAwareBeanProxy implements InvocationHandler {
         boolean forcestop = false;
 
         if (!acquired) {
+            bean.setDurationType(TimeAwareBean.EXTRA_TIME);
+            bean.setRemainingTime((int) timeLimitConfig.getExtraTimeLimit());
             threadProxyHandler.interrupt();
             if (timeLimitConfig.getExtraTimeLimit() < 1) {
                 lock.acquire();

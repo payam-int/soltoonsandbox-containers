@@ -121,7 +121,24 @@ class Example{
 ![TimeAwareBean Proxy](https://user-images.githubusercontent.com/4481808/33693342-a89a6eb4-db07-11e7-9d50-963d7d33790d.png)
 
 #### Extra time 
-You can give method an extra time which it has to make its final desi
+You can give method an extra time and notify it when it reached.
+
+Example of _Handling extra time operations_
+```java
+class TimeAwareBean extends DefaultTimeAwareBean {
+    public void method(){
+        // doing heavy calculcations
+        
+        if(getDurationType() == TimeAwareBean.EXTRA_TIME){
+            // final calculations
+        }else{
+            // continue calculations
+        }
+    }
+}
+```
+
+
 
 
 ### Temporary Return

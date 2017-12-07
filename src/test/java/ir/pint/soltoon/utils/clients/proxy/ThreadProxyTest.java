@@ -25,6 +25,21 @@ public class ThreadProxyTest {
         }
 
         @Override
+        public int getDurationType() {
+            return 0;
+        }
+
+        @Override
+        public void setRemainingTime(int remainingTime) {
+
+        }
+
+        @Override
+        public void setDurationType(int durationType) {
+
+        }
+
+        @Override
         public void repair() {
 
         }

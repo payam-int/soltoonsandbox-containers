@@ -3,6 +3,8 @@ package ir.pint.soltoon.utils.clients.proxy;
 
 // @todo refactor and comment
 public interface TimeAwareBean {
+    int LEGAL_TIME = 0, EXTRA_TIME = 1;
+
     void repair();
 
     void setProxyReturnStorage(ProxyReturnStorage proxyReturnStorage);
@@ -10,6 +12,11 @@ public interface TimeAwareBean {
     ProxyReturnStorage getProxyReturnStorage();
 
     int getRemainingTime();
+    void setRemainingTime(int remainingTime);
+
+    int getDurationType();
+
+    void setDurationType(int durationType);
 
     default void returnTemporary(Object returnObject) {
         getProxyReturnStorage().setInvokeReturn(returnObject);

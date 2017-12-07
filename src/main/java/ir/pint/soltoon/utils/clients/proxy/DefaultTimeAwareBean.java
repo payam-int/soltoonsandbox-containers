@@ -2,8 +2,10 @@ package ir.pint.soltoon.utils.clients.proxy;
 
 public abstract class DefaultTimeAwareBean implements TimeAwareProxyInterface, TimeAwareBean {
     private ProxyReturnStorage proxyReturnStorage;
-    private long legaltime;
-    private long extratime;
+    private long lifetime;
+    private int durationType;
+
+    private Object durationTypeLock = new Object();
 
     public void repair() {
     }
@@ -27,14 +29,39 @@ public abstract class DefaultTimeAwareBean implements TimeAwareProxyInterface, T
 
     @Override
     public int getRemainingTime() {
-        long cur = System.currentTimeMillis();
-        if (cur > legaltime && cur > extratime)
-            return -1;
-        else if (cur <= legaltime)
-            return (int) (legaltime - cur);
-        else if (cur <= extratime)
-            return (int) (extratime - legaltime);
-        else
-            return -2;
+        synchronized (durationTypeLock) {
+            if (lifetime == -2)
+                return -2;
+
+            long cur = System.currentTimeMillis();
+            if (cur > lifetime)
+                return -1;
+            else
+                return (int) (lifetime - cur);
+        }
     }
+
+    @Override
+    public void setRemainingTime(int remainingTime) {
+        synchronized (durationTypeLock) {
+            if (remainingTime == 0)
+                lifetime = -2;
+            else
+                lifetime = System.currentTimeMillis() + remainingTime;
+        }
+    }
+
+    @Override
+    public int getDurationType() {
+        synchronized (durationTypeLock) {
+            return durationType;
+        }
+    }
+
+    public void setDurationType(int durationType) {
+        synchronized (durationTypeLock) {
+            this.durationType = durationType;
+        }
+    }
+
 }
