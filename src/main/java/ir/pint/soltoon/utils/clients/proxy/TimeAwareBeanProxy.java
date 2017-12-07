@@ -1,6 +1,6 @@
 package ir.pint.soltoon.utils.clients.proxy;
 
-import ir.pint.soltoon.utils.clients.ai.Game;
+import ir.pint.soltoon.utils.clients.exceptions.ProxyTimeoutException;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -8,26 +8,25 @@ import java.lang.reflect.Proxy;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
-// @todo refactor
-public class ThreadProxy implements InvocationHandler {
-    private TimeLimitConfig timeLimitConfig;
+// @todo write facade for clients
+public class TimeAwareBeanProxy implements InvocationHandler {
+    private ProxyTimeLimit timeLimitConfig;
     private Semaphore lock;
-    private TimeLimitedBean bean;
+    private TimeAwareBean bean;
     private ThreadProxyHandler threadProxyHandler;
 
-    public ThreadProxy(TimeLimitedBean bean, TimeLimitConfig timeLimitConfig) {
+    public TimeAwareBeanProxy(TimeAwareBean bean, ProxyTimeLimit timeLimitConfig) {
         this.bean = bean;
         this.timeLimitConfig = timeLimitConfig;
         assignThreadProxyHandler();
     }
 
-    public static <F extends TimeLimitedBean> F createBean(Class beanClass, Class iface, TimeLimitConfig timeLimitConfig) throws IllegalAccessException, InstantiationException {
-        F bean = (F) beanClass.newInstance();
+    public static <F extends TimeAwareBean> F createBean(F bean, Class iface, ProxyTimeLimit timeLimitConfig) throws IllegalAccessException, InstantiationException {
 
         F beanProxied = (F) Proxy.newProxyInstance(
-                ThreadProxy.class.getClassLoader(),
+                TimeAwareBeanProxy.class.getClassLoader(),
                 new Class[]{iface},
-                new ThreadProxy(bean, timeLimitConfig)
+                new TimeAwareBeanProxy(bean, timeLimitConfig)
         );
 
         return beanProxied;
@@ -46,26 +45,43 @@ public class ThreadProxy implements InvocationHandler {
 
         lock.acquire();
 
+
         boolean acquired = false;
 
 
-        acquired = lock.tryAcquire(timeLimitConfig.getTimeLimit(), TimeUnit.MILLISECONDS);
+        if (timeLimitConfig.getTimeLimit() < 1) {
+            lock.acquire();
+            acquired = true;
+        } else {
+            acquired = lock.tryAcquire(timeLimitConfig.getTimeLimit(), TimeUnit.MILLISECONDS);
+        }
+
+        boolean forcestop = false;
 
         if (!acquired) {
             threadProxyHandler.interrupt();
-            acquired = lock.tryAcquire(timeLimitConfig.getExtraTimeLimit(), TimeUnit.MILLISECONDS);
-
+            if (timeLimitConfig.getExtraTimeLimit() < 1) {
+                lock.acquire();
+                acquired = true;
+            } else {
+                acquired = lock.tryAcquire(timeLimitConfig.getExtraTimeLimit(), TimeUnit.MILLISECONDS);
+            }
             if (!acquired) {
                 threadProxyHandler.stop();
                 assignThreadProxyHandler();
+                forcestop = true;
             } else {
             }
         }
 
-        if (proxyReturnStorage.getThrowableReturn() == null)
+        if (proxyReturnStorage.getInvokeReturn() != null)
             return proxyReturnStorage.getInvokeReturn();
-        else
+        else if (proxyReturnStorage.getThrowableReturn() != null)
             throw proxyReturnStorage.getThrowableReturn();
+        else if (forcestop && timeLimitConfig.getTimeoutPolicy() == TimeoutPolicy.THROW_EXCEPTION)
+            throw new ProxyTimeoutException();
+
+        return null;
     }
 
 }

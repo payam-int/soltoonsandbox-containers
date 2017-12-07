@@ -1,6 +1,9 @@
 # SoltoonSandbox - Container
 
-## What are containers ?
+## About this document
+### Performance 
+
+## What are the containers ?
 
 ## How to use
 
@@ -31,9 +34,108 @@
  
 @jalaldoust 
 
+
+
+
 # Utils
+
+## Time-Aware Beans
+Time-Aware beans are objects with time limit on method calls. `TimeAwareBeanProxy` helps you instantiate this objects and force its methods to run in a limited time. 
+### Features
+* Run methods with timeouts.
+* Set temporary return values for situations that method could not return in proper time.
+* Get remaining time
+* Tell method that its time is getting over
+
+### Simple Usage
+
+#### Object with limited running time (Time-Aware Bean)
+
+
+You can extend `TimeAwareProxyInterface`
+
+```java
+interface SomeIface extends TimeAwareProxyInterface{
+    boolean ready();
+}
+
+class SomeObject implements SomeIface{
+    // you have to implement methods
+    
+    public boolean ready(){
+        // stuff to do
+        
+        return true;
+    }
+}
+```
+
+or simply extend `DefaultTimeAwareBean`
+```java
+interface SomeIface extends TimeAwareProxyInterface{
+    boolean ready();
+}
+class SomeObject extends DefaultTimeAwareBean implements SomeIface{
+    public boolean ready(){
+        // stuff to do
+            
+        return true;
+    }
+}
+```
+#### Instantiate
+
+```java
+class Example{
+    public static void main(String[] args){
+      SomeObject someObject = new SomeObject();
+      ProxyTimeLimit proxyTimeLimit = new ProxyTimeLimit();
+      SomeIface timelimited = TimeLimitedBeanProxy.createBean(someObject, SomeIface.class, proxyTimeLimit);
+    }
+}
+```
+
+#### Call with timeout
+```java
+class Example{
+    public static void main(String[] args){
+      SomeObject someObject = new SomeObject();
+      ProxyTimeLimit proxyTimeLimit = new ProxyTimeLimit();
+      SomeIface timelimited = TimeLimitedBeanProxy.createBean(someObject, SomeIface.class, proxyTimeLimit);
+      
+      proxyTimeLimit.setTimeLimit(1000); // in milis
+      if(timelimited.ready()){
+          // do stuff
+      }
+      
+      proxyTimeLimit.setTimeLimit(0); // no time limit
+      if(timelimited.ready()){
+          // do stuff
+      }
+    }
+}
+```
+
+
+### Time limit
+![TimeAwareBean Proxy](https://user-images.githubusercontent.com/4481808/33693342-a89a6eb4-db07-11e7-9d50-963d7d33790d.png)
+
+#### Extra time 
+You can give method an extra time which it has to make its final desi
+
+
+### Temporary Return
+
+
+### Exceptions
+
+
+### Performance
+Good. My tests show that it makes about 0.001ms overhead on method calls. 
+
+
 ## ResultStorage
-It provides a structure for storing result of container. this result might be used by `SoltoonServer`.
+It provides a structure for storing result of the containers. This result might be used by `SoltoonServer`.
 
 ### Data Types
 | Name | Type | Description |
@@ -45,10 +147,10 @@ It provides a structure for storing result of container. this result might be us
 
 ### Usage
 #### Initialization
-By default ResultStorage tries to find storage settings from environment variables (`RESULT_STORAGE`) if it cant it uses `System.out`.
+By default, `ResultStorage` tries to find storage settings from environment variables (`RESULT_STORAGE`) if it can't it uses `System.out`.
 
 #### PreDestruction
-Before you exit from program you have to call `ResultStorage.save()` to write result data on given `OutputStream`.
+Before you exit the program, you have to call `ResultStorage.save()` to write result data on the given `OutputStream`.
 
 #### Examples
 
@@ -110,11 +212,11 @@ class Decode{
 }
 ```
 ### Trusted Classes
-A class(or onterface) is trusted if one of these conditions happen:
-* It is primitive 
-* It is a Map, an Array or a List 
-* It is annotated with `@Secure`
-* Its superclass or implemented interfaces are trusted.
+A class(or interface) is trusted if one of these conditions happen:
+1. It is primitive 
+2. It is a Map, an Array or a List 
+3. It is annotated with `@Secure`
+4. Its superclass or implemented interfaces are trusted.
 
 #### Define trusted class:
 ```java

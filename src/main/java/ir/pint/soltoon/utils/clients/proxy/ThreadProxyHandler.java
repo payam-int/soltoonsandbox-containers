@@ -1,11 +1,11 @@
 package ir.pint.soltoon.utils.clients.proxy;
 
 public class ThreadProxyHandler extends Thread {
-    private TimeLimitedBean bean;
+    private TimeAwareBean bean;
     private MethodInvoke methodInvoke = null;
     private Object objectLock = new Object();
 
-    public ThreadProxyHandler(TimeLimitedBean bean) {
+    public ThreadProxyHandler(TimeAwareBean bean) {
         super("Proxy Thread");
         setDaemon(true);
 
@@ -36,6 +36,9 @@ public class ThreadProxyHandler extends Thread {
     @Override
     public void run() {
         while (true) {
+
+            // clear intrrupt flag
+            this.isInterrupted();
 
             synchronized (objectLock) {
                 if (methodInvoke != null) {
