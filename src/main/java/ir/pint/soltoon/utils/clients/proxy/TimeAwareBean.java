@@ -1,7 +1,6 @@
 package ir.pint.soltoon.utils.clients.proxy;
 
 
-// @todo refactor and comment
 public interface TimeAwareBean {
     int LEGAL_TIME = 0, EXTRA_TIME = 1;
 

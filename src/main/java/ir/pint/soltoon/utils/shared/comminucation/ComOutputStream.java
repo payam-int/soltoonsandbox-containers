@@ -14,10 +14,14 @@ public class ComOutputStream extends DataOutputStream implements ObjectOutput {
     @Override
     public void writeObject(Object o) throws IOException {
         String encode = SecureJson.encode(o);
-        byte[] bytes = encode.getBytes();
+        String classn = o.getClass().getCanonicalName();
+        byte[] cname = classn.getBytes();
+        byte[] encodedBytes = encode.getBytes();
 
-        writeInt(bytes.length);
-        write(bytes);
+        writeInt(cname.length);
+        write(cname);
+        writeInt(encodedBytes.length);
+        write(encodedBytes);
         write(objectSplitter);
     }
 }

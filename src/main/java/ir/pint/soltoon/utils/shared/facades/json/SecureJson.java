@@ -48,6 +48,7 @@ public class SecureJson {
                         JsonObject jsonObject = jsonElement.getAsJsonObject();
                         if (jsonObject.has("_class")) {
                             String className = jsonObject.get("_class").getAsString();
+
                             Class<?> requestedClass;
                             try {
                                 requestedClass = Class.forName(className);

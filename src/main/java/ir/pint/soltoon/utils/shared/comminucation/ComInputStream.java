@@ -1,7 +1,9 @@
 package ir.pint.soltoon.utils.shared.comminucation;
 
 import java.io.*;
+import java.util.List;
 
+import ir.pint.soltoon.utils.shared.data.Data;
 import ir.pint.soltoon.utils.shared.facades.json.SecureJson;
 
 // @todo timelimit and size limit
@@ -14,9 +16,13 @@ public class ComInputStream extends DataInputStream implements ObjectInput {
 
     @Override
     public Object readObject() throws IOException {
+        int classNameSize = readInt();
+        byte[] cname = new byte[classNameSize];
+        readFully(cname);
+
         int inputSize = readInt();
-        byte[] bytes = new byte[inputSize];
-        readFully(bytes);
+        byte[] inp = new byte[inputSize];
+        readFully(inp);
 
         readFully(objectSplitter);
 
@@ -26,11 +32,15 @@ public class ComInputStream extends DataInputStream implements ObjectInput {
                 throw new IOException();
             }
 
-        String string = new String(bytes);
-
-        Object decode = SecureJson.decode(string, Object.class);
+        String string = new String(inp);
+        String className = new String(cname);
+        Object decode = null;
+        try {
+            decode = SecureJson.decode(string, Class.forName(className));
+        } catch (ClassNotFoundException e) {
+            return null;
+        }
         return decode;
-
     }
 
 //    protected Object readObject(int timeout) throws IOException, ClassNotFoundException {

@@ -39,6 +39,9 @@
 
 # Utils
 
+## Comminucations
+
+
 ## Time-Aware Beans
 Time-Aware beans are objects with time limit on method calls. `TimeAwareBeanProxy` helps you instantiate this objects and force its methods to run in a limited time. 
 ### Features
