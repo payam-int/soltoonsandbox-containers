@@ -103,7 +103,8 @@ class Example{
       ProxyTimeLimit proxyTimeLimit = new ProxyTimeLimit();
       SomeIface timelimited = TimeLimitedBeanProxy.createBean(someObject, SomeIface.class, proxyTimeLimit);
       
-      proxyTimeLimit.setTimeLimit(1000); // in milis
+      proxyTimeLimit.setTimeLimit(3000); // in milis
+      proxyTimeLimit.setExtraTimeLimit(1000);
       if(timelimited.ready()){
           // do stuff
       }
@@ -142,13 +143,21 @@ class TimeAwareBean extends DefaultTimeAwareBean {
 
 
 ### Temporary Return
-
+```java
+class TimeAwareBean extends DefaultTimeAwareBean {
+    public void method(){
+        // ...
+        returnTemporary(obj);
+        // ...
+    }
+}
+```
 
 ### Exceptions
-
+You can choose what happens when method call is timed out. if you set `timeoutPolicy` to `THROW_EXCEPTION` it throws an exception on timeouts otherwise it returns null. 
 
 ### Performance
-Good. My tests show that it makes about 0.001ms overhead on method calls. 
+**Good.** My tests show that it makes about 0.001ms overhead on method calls. 
 
 
 ## ResultStorage
@@ -164,7 +173,7 @@ It provides a structure for storing result of the containers. This result might 
 
 ### Usage
 #### Initialization
-By default, `ResultStorage` tries to find storage settings from environment variables (`RESULT_STORAGE`) if it can't it uses `System.out`.
+By default, `ResultStorage` tries to find storage settings from environment variables (`RESULT_STORAGE`) if it cannot it uses `System.out`.
 
 #### PreDestruction
 Before you exit the program, you have to call `ResultStorage.save()` to write result data on the given `OutputStream`.
