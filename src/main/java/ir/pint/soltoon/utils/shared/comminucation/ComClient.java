@@ -14,7 +14,8 @@ public class ComClient {
         this.comminucation = comminucation;
         this.connectionRequest = connectionRequest;
     }
-    public static ComClient connect(ComRemoteConfig clientConfig, int timeout) {
+
+    public static Comminucation connect(ComRemoteConfig clientConfig, int timeout) {
         try {
             ServerSocket serverSocket = new ServerSocket(clientConfig.getPort());
             serverSocket.setReuseAddress(true);
@@ -25,7 +26,7 @@ public class ComClient {
 
                 server.setSoTimeout(timeout);
 
-                ComInputStream comminucationObjectInputStream = new ComInputStream(server.getInputStream());
+                ComInputStream comminucationObjectInputStream = new ComInputStream(server, server.getInputStream());
                 ComOutputStream comminucationObjectOutputStream = new ComOutputStream(server.getOutputStream());
 
                 ConnectionRequest connectionRequest = (ConnectionRequest) comminucationObjectInputStream.readObject();
@@ -36,7 +37,8 @@ public class ComClient {
                     comminucationObjectOutputStream.writeObject(connectionResult);
 
                     Comminucation comminucation = new Comminucation(server, comminucationObjectInputStream, comminucationObjectOutputStream);
-                    return new ComClient(comminucation, connectionRequest);
+                    serverSocket.close();
+                    return comminucation;
                 } else {
                     connectionResult = new ConnectionResult(false);
                     comminucationObjectOutputStream.writeObject(connectionResult);

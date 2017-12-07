@@ -1,23 +1,20 @@
-# SoltoonSandbox - Container
+# SoltoonSandbox - Containers library
+
+![soltoon containers - soltooncontainer 4](https://user-images.githubusercontent.com/4481808/33730879-96bbcd16-db96-11e7-8207-0f58b4f3235a.png)
+
 
 ## About this document
-### Performance 
-
+### Performance
 ## What are the containers ?
-
 ## How to use
-
 ### Configuration
-
-### Environment Variables
+#### Environment Variables
 | Variable name | Target | Description | Example |
 | ------------- | ------ | ----------- | ------- |
 | RESULT_STORAGE | Client & Server |  - | result.txt |
 | PORT | Client | - | 127.0.0.1 |
 | PASSWORD | Client | - | `any string`
 | CLIENTS | Server | - | `host:port/password, host:port/password, ...` |
-
-
 ## Resource Limits
 
 ### Time limits
@@ -29,30 +26,59 @@
 ## How it works
 
 ## Active maintainers
-
 @payam-int (payam.int@gmail.com)
- 
-@jalaldoust 
-
-
-
 
 # Utils
 
-## Comminucations
+## Server/Client Comminucations
+This package helps you make communication between server and clients. It helps you have a secure communication.
 
+### Example Usages
 
-## Time-Aware Beans
+Connect to Server:
+```java
+ComRemoteConfig comRemoteConfig = new ComRemoteConfig(password, port); // creating remote(client) configuration
+Comminucation connect = ComClient.connect(comRemoteConfig, 1000);
+```
+
+Connect to clients:
+```java
+ComServer comServer = ComServer.initiate(remoteInfoList);
+Comminucation client = comServer.connect();
+Comminucation client = comServer.connect();
+//...
+```
+
+Read and write Object:
+```java
+Comminucation connect;
+Object o = connect.getObjectInputStream().readObject()
+
+Object w;
+connect.getObjectOutputStream().writeObject(w);
+```
+
+Read object with timeout:
+```java
+Comminucation connect;
+Object o = connect.getObjectInputStream().readObject(1000);
+```
+
+### Serialization/Deserialization
+It uses SecureJson to serialize and deserialize objects.
+
+## Time limitations
+### Time-Aware Beans
 Time-Aware beans are objects with time limit on method calls. `TimeAwareBeanProxy` helps you instantiate this objects and force its methods to run in a limited time. 
-### Features
+#### Features
 * Run methods with timeouts.
 * Set temporary return values for situations that method could not return in proper time.
 * Get remaining time
 * Tell method that its time is getting over
 
-### Simple Usage
+#### Simple Usage
 
-#### Object with limited running time (Time-Aware Bean)
+##### Object with limited running time (Time-Aware Bean)
 
 
 You can extend `TimeAwareProxyInterface`
@@ -86,7 +112,7 @@ class SomeObject extends DefaultTimeAwareBean implements SomeIface{
     }
 }
 ```
-#### Instantiate
+##### Instantiate
 
 ```java
 class Example{
@@ -98,7 +124,7 @@ class Example{
 }
 ```
 
-#### Call with timeout
+##### Call with timeout
 ```java
 class Example{
     public static void main(String[] args){
@@ -121,10 +147,10 @@ class Example{
 ```
 
 
-### Time limit
+#### Time limit
 ![TimeAwareBean Proxy](https://user-images.githubusercontent.com/4481808/33693342-a89a6eb4-db07-11e7-9d50-963d7d33790d.png)
 
-#### Extra time 
+##### Extra time
 You can give method an extra time and notify it when it reached.
 
 Example of _Handling extra time operations_
@@ -145,7 +171,7 @@ class TimeAwareBean extends DefaultTimeAwareBean {
 
 
 
-### Temporary Return
+#### Temporary Return
 ```java
 class TimeAwareBean extends DefaultTimeAwareBean {
     public void method(){
@@ -156,17 +182,17 @@ class TimeAwareBean extends DefaultTimeAwareBean {
 }
 ```
 
-### Exceptions
-You can choose what happens when method call is timed out. if you set `timeoutPolicy` to `THROW_EXCEPTION` it throws an exception on timeouts otherwise it returns null. 
+#### Exceptions
+You can choose what happens when method call is timed out. if you set `timeoutPolicy` to `THROW_EXCEPTION` it throws a `ir.pint.soltoon.utils.clients.exceptions.ProxyTimeoutException` exception on timeouts otherwise it returns null.
 
-### Performance
-**Good.** My tests show that it makes about 0.001ms overhead on method calls. 
+#### Performance
+**Good.** My testings show that it makes about 0.001ms overhead on method calls.
 
+## Comminucations with Sandbox
+### ResultStorage
+It provides a structure for storing result of the containers. This result might be used by `SoltoonSandbox` or `SoltoonWeb`.
 
-## ResultStorage
-It provides a structure for storing result of the containers. This result might be used by `SoltoonServer`.
-
-### Data Types
+#### Data Types
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | Event | EventLog | Any data that is an event and happening time is important. |
@@ -174,14 +200,14 @@ It provides a structure for storing result of the containers. This result might 
 | Meta | MetaLog | Any data that is not quite important |
 | Misc | <String, Object> | a key-value property for general use. |
 
-### Usage
-#### Initialization
-By default, `ResultStorage` tries to find storage settings from environment variables (`RESULT_STORAGE`) if it cannot it uses `System.out`.
+#### Usage
+##### Initialization
+By default, `ResultStorage` tries to find result file from environment variable `RESULT_STORAGE` if it cannot it uses `System.out`.
 
-#### PreDestruction
+##### PreDestruction
 Before you exit the program, you have to call `ResultStorage.save()` to write result data on the given `OutputStream`.
 
-#### Examples
+##### Examples
 
 ```java
 class SomeClass{    
@@ -202,10 +228,13 @@ class SomeClass{
 ```
 
 
-## SecureJson
-### Usage Example
-It provides Serialization/Deserialization services with a simple security check. It only works on [trusted classes](#trusted-classes). 
-#### Encode and decode
+## Serialization/Deserialization
+### SecureJson
+It provides secure Serialization/Deserialization using JSON.
+#### Usage
+The primary class to use is `SecureJson`. with static `encode` and `decode` methods you convert your objects to JSON string. `SecureJson` also have a simple security check, it only serializes or deserializes trusted classes.
+
+##### Encode and decode
 ```java
 @Secure
 class SecureClass{
@@ -213,7 +242,7 @@ class SecureClass{
 }
 ```
 
-Encode:
+**Encode:**
 ```java
 class Encode{
     public static void main(String[] args){
@@ -231,7 +260,7 @@ class Encode{
 }
 ```
 
-Decode:
+**Decode:**
 ```java
 class Decode{
     public static void main(String[] args){
@@ -240,14 +269,15 @@ class Decode{
     }
 }
 ```
-### Trusted Classes
+
+#### Trusted Classes
 A class(or interface) is trusted if one of these conditions happen:
 1. It is primitive 
 2. It is a Map, an Array or a List 
 3. It is annotated with `@Secure`
 4. Its superclass or implemented interfaces are trusted.
 
-#### Define trusted class:
+##### Define trusted class:
 ```java
 @ir.pint.soltoon.utils.shared.facades.json.Secure
 class SecureClass{
@@ -256,7 +286,7 @@ class SecureClass{
 * Classes and interfaces inherit `@Secure` annotation.
 * You can use `@Secure` annotation on interfaces.
 
-### Performance
+#### Performance
 
 | Method | Description |
 |--------|-------------|

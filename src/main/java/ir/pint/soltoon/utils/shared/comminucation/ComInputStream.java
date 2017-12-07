@@ -1,6 +1,7 @@
 package ir.pint.soltoon.utils.shared.comminucation;
 
 import java.io.*;
+import java.net.Socket;
 import java.util.List;
 
 import ir.pint.soltoon.utils.shared.data.Data;
@@ -9,15 +10,27 @@ import ir.pint.soltoon.utils.shared.facades.json.SecureJson;
 // @todo timelimit and size limit
 public class ComInputStream extends DataInputStream implements ObjectInput {
     private byte[] objectSplitter = new byte[8];
+    private Socket socket;
+    private int timeout = -1;
 
-    public ComInputStream(InputStream inputStream) {
+    public ComInputStream(Socket socket, InputStream inputStream) {
         super(inputStream);
+        this.socket = socket;
     }
 
     @Override
     public Object readObject() throws IOException {
+        if (timeout != 0 && socket != null)
+            socket.setSoTimeout(0);
+        timeout = 0;
+
+        return readObject0();
+    }
+
+    private Object readObject0() throws IOException {
         int classNameSize = readInt();
         byte[] cname = new byte[classNameSize];
+
         readFully(cname);
 
         int inputSize = readInt();
@@ -43,10 +56,18 @@ public class ComInputStream extends DataInputStream implements ObjectInput {
         return decode;
     }
 
-//    protected Object readObject(int timeout) throws IOException, ClassNotFoundException {
-//        filteredInputStream.setRemainingTime(timeout * 1000000L);
-//        Object o = readObject();
-//        filteredInputStream.setRemainingTime(0);
-//        return o;
-//    }
+
+    public Object readObject(int timeout) throws IOException {
+
+
+        if (this.timeout != timeout && socket != null) {
+            socket.setSoTimeout(timeout);
+
+        }
+        this.timeout = timeout;
+
+
+        return readObject0();
+
+    }
 }

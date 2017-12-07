@@ -7,24 +7,34 @@ import ir.pint.soltoon.utils.shared.exceptions.NoComRemoteAvailable;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedDeque;
 
 public class ComServer {
     private Hashtable<ComRemoteInfo, Comminucation> comminucations;
-    private ArrayList<ComRemoteInfo> remotes = new ArrayList<>();
+    private List<ComRemoteInfo> remotes = new ArrayList<>();
     private ConcurrentLinkedDeque<ComRemoteInfo> connectionList;
 
-    public ComServer(ArrayList<ComRemoteInfo> remotes) {
+    private ComServer(List<ComRemoteInfo> remotes) {
         this.remotes = remotes;
         this.connectionList = new ConcurrentLinkedDeque<>();
         connectionList.addAll(remotes);
     }
 
-    public static ComServer createAndConnectFromEnv(int timeout) throws NoComRemoteAvailable {
-        ComServer server = new ComServer(ComRemoteInfo.createFromEnv());
-        server.connectAll(true);
+    public static ComServer initiate(List<ComRemoteInfo> clients) {
+        ComServer server = new ComServer(clients);
         return server;
+    }
+
+
+    public static ComServer initiate(ComRemoteInfo remoteInfo) {
+        return initiate(Arrays.asList(remoteInfo));
+    }
+
+    public static ComServer initiateFromEnv() {
+        return initiate(ComRemoteInfo.createFromEnv());
     }
 
     public Comminucation connect() throws NoComRemoteAvailable {
@@ -41,13 +51,13 @@ public class ComServer {
         }
     }
 
-    public Comminucation connect(ComRemoteInfo remoteInfo) {
+    private Comminucation connect(ComRemoteInfo remoteInfo) {
         try {
             Socket socket = new Socket();
             socket.connect(new InetSocketAddress(remoteInfo.getHost(), remoteInfo.getPort()));
 
             ComOutputStream comminucationObjectOutputStream = new ComOutputStream(socket.getOutputStream());
-            ComInputStream comminucationObjectInputStream = new ComInputStream(socket.getInputStream());
+            ComInputStream comminucationObjectInputStream = new ComInputStream(socket, socket.getInputStream());
 
             ConnectionRequest connectionRequest = new ConnectionRequest(remoteInfo.getPassword());
 
@@ -97,7 +107,7 @@ public class ComServer {
         return comminucations;
     }
 
-    public ArrayList<ComRemoteInfo> getRemotes() {
+    public List<ComRemoteInfo> getRemotes() {
         return remotes;
     }
 }
