@@ -37,7 +37,7 @@ public class ComClient {
                     comminucationObjectOutputStream.writeObject(connectionResult);
 
                     Comminucation comminucation = new Comminucation(server, comminucationObjectInputStream, comminucationObjectOutputStream);
-                    serverSocket.close();
+//                    serverSocket.close();
                     return comminucation;
                 } else {
                     connectionResult = new ConnectionResult(false);

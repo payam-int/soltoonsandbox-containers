@@ -122,7 +122,7 @@ class Example{
     public static void main(String[] args){
       SomeObject someObject = new SomeObject();
       ProxyTimeLimit proxyTimeLimit = new ProxyTimeLimit();
-      SomeIface timelimited = TimeLimitedBeanProxy.createBean(someObject, SomeIface.class, proxyTimeLimit);
+      SomeIface timelimited = TimeAwareBeanProxy.createBean(someObject, SomeIface.class, proxyTimeLimit);
     }
 }
 ```
@@ -133,7 +133,7 @@ class Example{
     public static void main(String[] args){
       SomeObject someObject = new SomeObject();
       ProxyTimeLimit proxyTimeLimit = new ProxyTimeLimit();
-      SomeIface timelimited = TimeLimitedBeanProxy.createBean(someObject, SomeIface.class, proxyTimeLimit);
+      SomeIface timelimited = TimeAwareBeanProxy.createBean(someObject, SomeIface.class, proxyTimeLimit);
       
       proxyTimeLimit.setTimeLimit(3000); // in milis
       proxyTimeLimit.setExtraTimeLimit(1000);

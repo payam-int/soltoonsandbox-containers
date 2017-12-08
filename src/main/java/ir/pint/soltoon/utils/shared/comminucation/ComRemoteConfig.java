@@ -1,8 +1,8 @@
 package ir.pint.soltoon.utils.shared.comminucation;
 
-import ir.pint.soltoon.utils.shared.facades.json.Secure;
+import ir.pint.soltoon.utils.shared.facades.objects.SecureBean;
 
-@Secure
+@SecureBean
 public class ComRemoteConfig {
     private String password;
     private int port;

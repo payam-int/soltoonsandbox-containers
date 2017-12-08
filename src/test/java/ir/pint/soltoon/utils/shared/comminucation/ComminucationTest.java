@@ -48,7 +48,7 @@ public class ComminucationTest {
             public boolean ok = false;
             @Override
             public void run() {
-                ComRemoteConfig comRemoteConfig = new ComRemoteConfig(password, 8585);
+                ComRemoteConfig comRemoteConfig = new ComRemoteConfig(password, 8580);
                 Comminucation connect = ComClient.connect(comRemoteConfig, 1000);
                 System.out.println(connect);
                 try {
@@ -77,7 +77,7 @@ public class ComminucationTest {
                     e.printStackTrace();
                 }
 
-                ComRemoteInfo remoteInfo = new ComRemoteInfo("localhost", 8585, password);
+                ComRemoteInfo remoteInfo = new ComRemoteInfo("localhost", 8580, password);
                 ComServer comServer = ComServer.initiate(remoteInfo);
                 Comminucation connect = null;
                 try {

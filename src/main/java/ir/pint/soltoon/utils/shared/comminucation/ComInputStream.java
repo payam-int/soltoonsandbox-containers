@@ -6,11 +6,13 @@ import java.util.List;
 
 import ir.pint.soltoon.utils.shared.data.Data;
 import ir.pint.soltoon.utils.shared.facades.json.SecureJson;
+
 // @todo changable inputSize limit
 public class ComInputStream extends DataInputStream implements ObjectInput {
     private byte[] objectSplitter = new byte[8];
     private Socket socket;
     private int timeout = -1;
+    public static boolean DEBUG = false;
 
     private long maxInputSize = 1024 * 1024 * 10;
 
@@ -51,10 +53,13 @@ public class ComInputStream extends DataInputStream implements ObjectInput {
             }
 
         String string = new String(inp);
+        if (DEBUG)
+            System.out.println("I# " + string);
         String className = new String(cname);
         Object decode = null;
         try {
             decode = SecureJson.decode(string, Class.forName(className));
+
         } catch (ClassNotFoundException e) {
             return null;
         }

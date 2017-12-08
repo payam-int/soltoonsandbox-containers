@@ -87,7 +87,7 @@ public class ComServer {
 
         for (int i = 0; i < reties; i++) {
             for (int j = connectionList.size(); j > 0; j--) {
-                ComRemoteInfo remoteInfo = connectionList.peek();
+                ComRemoteInfo remoteInfo = connectionList.peekLast();
                 Comminucation com = connect();
                 if (com != null) {
                     connected++;

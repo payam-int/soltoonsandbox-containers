@@ -1,6 +1,8 @@
 package ir.pint.soltoon.utils.clients.proxy;
 
 public abstract class DefaultTimeAwareBean implements TimeAwareProxyInterface, TimeAwareBean {
+    public static final int TIME_ENDED = -2;
+    public static final int UNLIMITED_TIME = -1;
     private ProxyReturnStorage proxyReturnStorage;
     private long lifetime;
     private int durationType;
@@ -31,11 +33,11 @@ public abstract class DefaultTimeAwareBean implements TimeAwareProxyInterface, T
     public int getRemainingTime() {
         synchronized (durationTypeLock) {
             if (lifetime == -2)
-                return -2;
+                return TIME_ENDED;
 
             long cur = System.currentTimeMillis();
             if (cur > lifetime)
-                return -1;
+                return UNLIMITED_TIME;
             else
                 return (int) (lifetime - cur);
         }
