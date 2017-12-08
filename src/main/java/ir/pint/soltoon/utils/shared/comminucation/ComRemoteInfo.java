@@ -6,6 +6,8 @@ import java.util.ArrayList;
 
 @Secure
 public class ComRemoteInfo {
+    private String name;
+    private String displayName;
     private String host;
     private int port;
     private String password;
@@ -14,6 +16,14 @@ public class ComRemoteInfo {
     }
 
     public ComRemoteInfo(String host, int port, String password) {
+        this.host = host;
+        this.port = port;
+        this.password = password;
+    }
+
+    public ComRemoteInfo(String name, String displayName, String host, int port, String password) {
+        this.name = name;
+        this.displayName = displayName;
         this.host = host;
         this.port = port;
         this.password = password;
@@ -61,4 +71,19 @@ public class ComRemoteInfo {
         this.password = password;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 }

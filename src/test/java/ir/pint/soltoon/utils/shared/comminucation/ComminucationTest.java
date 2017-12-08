@@ -1,18 +1,39 @@
 package ir.pint.soltoon.utils.shared.comminucation;
 
-import ir.pint.soltoon.utils.shared.data.Data;
 import ir.pint.soltoon.utils.shared.exceptions.NoComRemoteAvailable;
+import ir.pint.soltoon.utils.shared.facades.json.Secure;
+import ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.Semaphore;
 
 public class ComminucationTest {
+    @Secure
+    public static class Data {
+        private String text = "hello";
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Data)) return false;
+
+            Data data = (Data) o;
+
+            return text != null ? text.equals(data.text) : data.text == null;
+        }
+
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "text='" + text + '\'' +
+                    '}';
+        }
+    }
+
     @Before
     public void setUp() throws Exception {
 
@@ -22,19 +43,6 @@ public class ComminucationTest {
     public void tearDown() throws Exception {
     }
 
-    @Test
-    public void comStreams() throws Exception {
-        PipedOutputStream pipedOutputStream = new PipedOutputStream();
-        PipedInputStream pipedInputStream = new PipedInputStream(pipedOutputStream);
-
-        ComInputStream comInputStream = new ComInputStream(null, pipedInputStream);
-        ComOutputStream comOutputStream = new ComOutputStream(pipedOutputStream);
-
-        Data data = new Data();
-        comOutputStream.writeObject(data);
-        Data data1 = (Data) comInputStream.readObject();
-        Assert.assertEquals(data, data1);
-    }
 
     @Test
     public void comConnection() throws Exception {
@@ -46,6 +54,7 @@ public class ComminucationTest {
 
         class Client implements Runnable {
             public boolean ok = false;
+
             @Override
             public void run() {
                 ComRemoteConfig comRemoteConfig = new ComRemoteConfig(password, 8580);
@@ -58,7 +67,6 @@ public class ComminucationTest {
                     }
 
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
                 connect.close();
 
@@ -89,7 +97,6 @@ public class ComminucationTest {
                 try {
                     connect.getObjectOutputStream().writeObject(data);
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
                 connect.close();
@@ -124,6 +131,7 @@ public class ComminucationTest {
                     try {
                         Data data1 = (Data) connect.getObjectInputStream().readObject(1000);
                     } catch (SocketTimeoutException e) {
+                        e.printStackTrace();
                         this.ok = true;
                     }
 

@@ -19,7 +19,7 @@ public class ComOutputStream extends DataOutputStream implements ObjectOutput {
         if (DEBUG)
             System.out.println("O# " + encode);
 
-        String classn = o.getClass().getCanonicalName();
+        String classn = o.getClass().getName();
         byte[] cname = classn.getBytes();
         byte[] encodedBytes = encode.getBytes();
 

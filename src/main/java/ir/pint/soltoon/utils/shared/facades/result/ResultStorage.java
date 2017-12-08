@@ -26,7 +26,7 @@ public class ResultStorage {
         try {
             initFromEnv();
         } catch (EnvironmentVariableNotFound environmentVariableNotFound) {
-            // ignore
+            init(System.out);
         }
     }
 

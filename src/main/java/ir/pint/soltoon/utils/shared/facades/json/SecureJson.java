@@ -1,13 +1,12 @@
 package ir.pint.soltoon.utils.shared.facades.json;
 
 import com.google.gson.*;
-import io.gsonfire.GsonFireBuilder;
-import io.gsonfire.PostProcessor;
-import io.gsonfire.TypeSelector;
+import ir.pint.gsonfire.GsonFireBuilder;
+import ir.pint.gsonfire.PostProcessor;
+import ir.pint.gsonfire.TypeSelector;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.*;
 
 public class SecureJson {
     private static final Gson gson;
@@ -20,7 +19,16 @@ public class SecureJson {
                 .registerPostProcessor(Object.class, new PostProcessor<Object>() {
                     @Override
                     public void postDeserialize(Object secureTransfered, JsonElement jsonElement, Gson gson) {
-
+                        if (secureTransfered != null && secureTransfered.getClass().isAnnotationPresent(Secure.class)) {
+                            try {
+                                Method init = secureTransfered.getClass().getMethod("init");
+                                if (init != null) {
+                                    init.invoke(secureTransfered);
+                                }
+                            } catch (Exception e) {
+                                // ignore
+                            }
+                        }
                     }
 
                     @Override
@@ -28,12 +36,12 @@ public class SecureJson {
                         if (secureTransfered == null)
                             return;
 
-                        if (SecureJson.haveSpecificObject(secureTransfered.getClass())) {
+                        if (jsonElement.isJsonObject() && SecureJson.haveSpecificObject(secureTransfered.getClass())) {
                             if (secureTransfered.getClass().isAnnotationPresent(SecureConvert.class)) {
                                 Class secureas = secureTransfered.getClass().getAnnotationsByType(SecureConvert.class)[0].value();
-                                jsonElement.getAsJsonObject().addProperty("_class", secureas.getCanonicalName());
+                                jsonElement.getAsJsonObject().addProperty("_class", secureas.getName());
                             } else {
-                                jsonElement.getAsJsonObject().addProperty("_class", secureTransfered.getClass().getCanonicalName());
+                                jsonElement.getAsJsonObject().addProperty("_class", secureTransfered.getClass().getName());
                             }
 
                         }
@@ -46,6 +54,7 @@ public class SecureJson {
                             return null;
 
                         JsonObject jsonObject = jsonElement.getAsJsonObject();
+
                         if (jsonObject.has("_class")) {
                             String className = jsonObject.get("_class").getAsString();
 
@@ -60,13 +69,14 @@ public class SecureJson {
                         }
                         return null;
                     }
+
                 });
         gson = gsonFireBuilder.createGsonBuilder()
                 .setExclusionStrategies(new JsonExclutionStrategy())
                 .serializeNulls()
                 .create();
 
-        trustedClasses.addAll(Arrays.asList(String.class, Boolean.class, Character.class, Long.class, Double.class, Integer.class, Byte.class, Float.class, Short.class));
+        trustedClasses.addAll(Arrays.asList(String.class, Boolean.class, Character.class, Long.class, Double.class, Integer.class, Byte.class, Float.class, Short.class, Map.class, List.class));
     }
 
     public static boolean haveSpecificObject(Class<?> aClass) {

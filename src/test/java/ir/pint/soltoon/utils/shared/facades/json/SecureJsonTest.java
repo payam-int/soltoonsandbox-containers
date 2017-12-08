@@ -141,12 +141,12 @@ public class SecureJsonTest {
 
     @org.junit.Test
     public void encode() throws Exception {
-        assertEquals("{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"secureClass\":{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"secureClass\":null,\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest.SecureClass\"},\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest.SecureClass\"}", SecureJson.encode(testSecureClass));
+        assertEquals("{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"list\":[\"first\",\"second\"],\"map\":{\"second\":\"secondvalue\",\"first\":\"firstvalue\"},\"secureClass\":{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"list\":[\"first\",\"second\"],\"map\":{\"second\":\"secondvalue\",\"first\":\"firstvalue\"},\"secureClass\":null,\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest$SecureClass\"},\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest$SecureClass\"}", SecureJson.encode(testSecureClass));
     }
 
     @org.junit.Test
     public void decode() throws Exception {
-        SecureClass decode = SecureJson.decode("{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"secureClass\":{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"secureClass\":null,\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest.SecureClass\"},\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest.SecureClass\"}", SecureClass.class);
+        SecureClass decode = SecureJson.decode("{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"list\":[\"first\",\"second\"],\"map\":{\"second\":\"secondvalue\",\"first\":\"firstvalue\"},\"secureClass\":{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"list\":[\"first\",\"second\"],\"map\":{\"second\":\"secondvalue\",\"first\":\"firstvalue\"},\"secureClass\":null,\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest$SecureClass\"},\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest$SecureClass\"}", SecureClass.class);
 
         System.out.println(testSecureClass);
         System.out.println(decode);
@@ -154,4 +154,25 @@ public class SecureJsonTest {
         assertTrue(decode.equals(testSecureClass));
     }
 
+    @Secure
+    public static class Data {
+        private String text = "hello";
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (!(o instanceof Data)) return false;
+
+            Data data = (Data) o;
+
+            return text != null ? text.equals(data.text) : data.text == null;
+        }
+
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "text='" + text + '\'' +
+                    '}';
+        }
+    }
 }

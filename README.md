@@ -2,31 +2,24 @@
 
 ![soltoon containers - soltooncontainer 5](https://user-images.githubusercontent.com/4481808/33734875-e17ba540-dba2-11e7-8130-d579b538ff71.png)
 
-
 ## About this document
-### Performance
-## What are the containers ?
-## How to use
-### Configuration
-#### Environment Variables
+This document was written on December 9, 2017.
+Authors:
+* Payam Mohammadi (@payam-int)
+## Configuration
+### Environment Variables
 | Variable name | Target | Description | Example |
 | ------------- | ------ | ----------- | ------- |
 | RESULT_STORAGE | Client & Server |  - | path/to/result.txt |
 | PORT | Client | - | 127.0.0.1 |
 | PASSWORD | Client | - | `any string`
 | CLIENTS | Server | - | `host:port/password, host:port/password, ...` |
-## Resource Limits
 
-### Time limits
-
-#### Command timeout
-
-#### Container timeout
-
-## How it works
+## How this helps you
+This library provides utilities that help you running containers in a safe manner.
 
 ## Active maintainers
-@payam-int (payam.int@gmail.com)
+* Payam Mohammadi (@payam-int)
 
 # Utils
 
@@ -186,7 +179,7 @@ class TimeAwareBean extends DefaultTimeAwareBean {
 ```
 
 #### Exceptions
-You can choose what happens when method call is timed out. if you set `timeoutPolicy` to `THROW_EXCEPTION` it throws a `ir.pint.soltoon.utils.clients.exceptions.ProxyTimeoutException` exception on timeouts otherwise it returns null.
+You can choose what happens when method call is timed out. if you set `timeoutPolicy` to `THROW_EXCEPTION` it throws a `ir.pint.soltoon.ir.pint.soltoon.utils.clients.exceptions.ProxyTimeoutException` exception on timeouts otherwise it returns null.
 
 #### Performance
 **Good.** My testings show that it makes about 0.001ms overhead on method calls.
