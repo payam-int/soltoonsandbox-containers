@@ -141,6 +141,8 @@ public class ResultStorage {
 
     public static boolean flush() {
         String s = serialze();
+        boolean result = true;
+
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
         try {
             bufferedOutputStream.write(s.getBytes());
@@ -148,11 +150,10 @@ public class ResultStorage {
             if (closeStream)
                 bufferedOutputStream.close();
         } catch (IOException e) {
-            return false;
+
         }
 
 
-        boolean result = true;
         for (ResultHandler resultHandler : resultHandlers)
             result &= resultHandler.flush();
 

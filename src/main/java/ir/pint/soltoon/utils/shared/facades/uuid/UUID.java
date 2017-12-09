@@ -6,6 +6,7 @@ public class UUID {
     public static Random random = new Random();
 
     public static long getLong() {
-        return random.nextLong();
+        long l = random.nextLong();
+        return l < 0 ? -l : l;
     }
 }

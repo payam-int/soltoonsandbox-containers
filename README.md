@@ -15,6 +15,9 @@ Authors:
 | PASSWORD | Client | - | `any string`
 | CLIENTS | Server | - | `host:port/password, host:port/password, ...` |
 
+## build
+For ease of build, you can use `with-dependency` jar.
+
 ## How this helps you
 This library provides utilities that help you running containers in a safe manner.
 
