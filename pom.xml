@@ -18,8 +18,6 @@
             <groupId>ir.pint.gson</groupId>
             <artifactId>gson-fire</artifactId>
             <version>1.8.2</version>
-            <systemPath>${project.basedir}/lib/gson-fire-1.8.2.jar</systemPath>
-            <scope>system</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -78,13 +78,10 @@ public class ThreadProxyTest {
 
             while (System.currentTimeMillis() - s < l)
                 try {
-                    System.out.println("sleep -" + l);
                     Thread.sleep(l);
                 } catch (InterruptedException e1) {
 
                 }
-
-            System.out.println("Thread not dead !");
             return true;
         }
 
