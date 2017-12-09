@@ -201,7 +201,7 @@ It provides a structure for storing result of the containers. This result might 
 By default, `ResultStorage` tries to find result file from environment variable `RESULT_STORAGE` if it cannot it uses `System.out`.
 
 ##### PreDestruction
-Before you exit the program, you have to call `ResultStorage.save()` to write result data on the given `OutputStream`.
+Before you exit the program, you have to call `ResultStorage.flush()` to write result data on the given `OutputStream`.
 
 ##### Examples
 

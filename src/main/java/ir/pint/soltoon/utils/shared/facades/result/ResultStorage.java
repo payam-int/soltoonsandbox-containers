@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import ir.pint.soltoon.utils.shared.exceptions.EnvironmentVariableNotFound;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -17,6 +18,7 @@ public class ResultStorage {
     private static OutputStream outputStream;
     private static boolean closeStream = false;
     private static Integer resultCode = 0;
+    private static ArrayList<ResultHandler> resultHandlers = new ArrayList<>();
 
     static {
         init();
@@ -55,20 +57,30 @@ public class ResultStorage {
 
     public static void addException(Exception e) {
         exceptions.add(e);
+        for (ResultHandler resultHandler : resultHandlers)
+            resultHandler.addException(e);
     }
 
     public static void addEvent(EventLog eventLog) {
         eventLog.setCreateTimestamp(System.currentTimeMillis());
         events.add(eventLog);
+
+        for (ResultHandler resultHandler : resultHandlers)
+            resultHandler.addEvent(eventLog);
     }
 
 
     public static void addMeta(MetaLog metaLog) {
         metas.add(metaLog);
+        for (ResultHandler resultHandler : resultHandlers)
+            resultHandler.addMeta(metaLog);
     }
 
     public static void putMisc(String key, Object value) {
         misc.put(key, value);
+
+        for (ResultHandler resultHandler : resultHandlers)
+            resultHandler.putMisc(key, value);
     }
 
     public static Object getMisc(String key, Object defaultValue) {
@@ -85,6 +97,10 @@ public class ResultStorage {
 
     public static void setResultCode(Integer resultCode) {
         ResultStorage.resultCode = resultCode;
+    }
+
+    public static void addResultHandler(ResultHandler resultHandler) {
+        resultHandlers.add(resultHandler);
     }
 
     private static class ResultObject {
@@ -123,7 +139,7 @@ public class ResultStorage {
         }
     }
 
-    public static void save() {
+    public static boolean flush() {
         String s = serialze();
         BufferedOutputStream bufferedOutputStream = new BufferedOutputStream(outputStream);
         try {
@@ -132,8 +148,15 @@ public class ResultStorage {
             if (closeStream)
                 bufferedOutputStream.close();
         } catch (IOException e) {
-            System.exit(-2);
+            return false;
         }
+
+
+        boolean result = true;
+        for (ResultHandler resultHandler : resultHandlers)
+            result &= resultHandler.flush();
+
+        return result;
     }
 
     public static String serialze() {

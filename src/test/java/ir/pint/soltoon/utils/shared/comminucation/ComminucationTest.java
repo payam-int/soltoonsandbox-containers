@@ -59,7 +59,6 @@ public class ComminucationTest {
             public void run() {
                 ComRemoteConfig comRemoteConfig = new ComRemoteConfig(password, 8580);
                 Comminucation connect = ComClient.connect(comRemoteConfig, 1000);
-                System.out.println(connect);
                 try {
                     Data data1 = (Data) connect.getObjectInputStream().readObject();
                     if (data1.equals(data)) {

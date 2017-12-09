@@ -107,36 +107,35 @@ public class SecureJsonTest {
 
     @org.junit.Test
     public void isSecure() throws Exception {
-        System.out.println("IsSecure Time:");
 
-        long t = System.nanoTime();
+
         assertEquals(true, SecureJson.isSecure(SecureClass.class));
-        System.out.println("Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
         assertEquals(true, SecureJson.isSecure(SecureChildClass.class));
-        System.out.println("Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
         assertEquals(false, SecureJson.isSecure(InsecureClass.class));
-        System.out.println("Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
         assertEquals(true, SecureJson.isSecure(SecureByInterfaceClass.class));
-        System.out.println("Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
         assertEquals(true, SecureJson.isSecure(SecureBySuperClass.class));
-        System.out.println("Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
         assertEquals(true, SecureJson.isSecure(SecureByParentInterface.class));
-        System.out.println("Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
         assertEquals(true, SecureJson.isSecure(SecureClass.class));
-        System.out.println("(R) Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
         assertEquals(true, SecureJson.isSecure(SecureClass.class));
-        System.out.println("(R) Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
         assertEquals(true, SecureJson.isSecure(SecureByParentInterface.class));
-        System.out.println("(R) Operation: " + (System.nanoTime() - t));
-        t = System.nanoTime();
+
+
     }
 
     @org.junit.Test
@@ -148,8 +147,6 @@ public class SecureJsonTest {
     public void decode() throws Exception {
         SecureClass decode = SecureJson.decode("{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"list\":[\"first\",\"second\"],\"map\":{\"second\":\"secondvalue\",\"first\":\"firstvalue\"},\"secureClass\":{\"string\":\"test\",\"integer\":1,\"integerClass\":10,\"nullobject\":null,\"list\":[\"first\",\"second\"],\"map\":{\"second\":\"secondvalue\",\"first\":\"firstvalue\"},\"secureClass\":null,\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest$SecureClass\"},\"_class\":\"ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest$SecureClass\"}", SecureClass.class);
 
-        System.out.println(testSecureClass);
-        System.out.println(decode);
 
         assertTrue(decode.equals(testSecureClass));
     }

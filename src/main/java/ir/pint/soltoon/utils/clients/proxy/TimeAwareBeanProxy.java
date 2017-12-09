@@ -79,6 +79,7 @@ public class TimeAwareBeanProxy implements InvocationHandler {
             }
         }
 
+        // @todo type checking
         if (proxyReturnStorage.getInvokeReturn() != null)
             return proxyReturnStorage.getInvokeReturn();
         else if (proxyReturnStorage.getThrowableReturn() != null)
