@@ -3,7 +3,7 @@ package ir.pint.soltoon.utils.shared.comminucation;
 import java.io.*;
 import java.net.Socket;
 
-import ir.pint.soltoon.utils.shared.facades.json.SecureJson;
+import ir.pint.soltoon.utils.shared.facades.json.DeSerializer;
 
 // @todo changable inputSize limit
 public class ComInputStream extends DataInputStream implements ObjectInput {
@@ -57,7 +57,7 @@ public class ComInputStream extends DataInputStream implements ObjectInput {
         String className = new String(cname);
         Object decode = null;
         try {
-            decode = SecureJson.decode(string, Class.forName(className));
+            decode = DeSerializer.deserialize(string, Class.forName(className));
         } catch (ClassNotFoundException e) {
             return null;
         }

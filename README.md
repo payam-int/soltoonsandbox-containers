@@ -228,30 +228,22 @@ class SomeClass{
 
 
 ## Serialization/Deserialization
-### SecureJson
-It provides secure Serialization/Deserialization using JSON.
+### DeSerialzier
+It provides type-preserved Serialization/Deserialization using JSON.
 #### Usage
-The primary class to use is `SecureJson`. with static `encode` and `decode` methods you convert your objects to JSON string. `SecureJson` also have a simple security check, it only serializes or deserializes trusted classes.
-
-##### Encode and decode
+The primary class to use is `DeSerializer`. with static `serialize` and `deserialize` methods you convert to/from JSON string.
+**Serialize:**
 ```java
-@Secure
-class SecureClass{
-    public String text = "hello";
-}
-```
-
-**Encode:**
-```java
-class Encode{
+class Serialize{
     public static void main(String[] args){
-        SecureClass secureClass = new SecureClass();
-        String json = SecureJson.encode(secureClass);
-        
-        System.out.println(json);       
+        MyObject myObject = new MyObject();
+        String json = DeSerializer.serialize(myObject);
+
+        System.out.println(json);
     }
 }
 ```
+
 ```
 {
     "text": "hello"
@@ -259,34 +251,29 @@ class Encode{
 }
 ```
 
-**Decode:**
+**Deserialize:**
 ```java
-class Decode{
+class Deserialize{
     public static void main(String[] args){
       String json; // JSON String
-      SecureClass secureClass = SecureJson.decode(json, SecureClass.class);
+      MyObject myObject = DeSerializer.deserialize(json, MyObject.class);
     }
 }
 ```
 
-#### Trusted Classes
-A class(or interface) is trusted if one of these conditions happen:
-1. It is primitive 
-2. It is a Map, an Array or a List 
-3. It is annotated with `@Secure`
-4. Its superclass or implemented interfaces are trusted.
+#### Serialize as another class
+You can serialize your object as it is another object. You can do this by adding the @Secure annotation. This makes serializer checks if object's property exists on the target class. If no, skips it.
 
-##### Define trusted class:
 ```java
-@ir.pint.soltoon.utils.shared.facades.json.Secure
-class SecureClass{
+class Parent{
+    private int included;
+}
+
+@SerializeAs(Parent.class)
+class Child extends Parent{
+    private int notIncluded;
 }
 ```
-* Classes and interfaces inherit `@Secure` annotation.
-* You can use `@Secure` annotation on interfaces.
 
-#### Performance
-
-| Method | Description |
-|--------|-------------|
-| `isSecure` | First call ~ 0.1s <br> First call on new class ~ 0.3ms <br> Duplicate call ~ 0.01ms |
+#### Insecure classes for deserialization
+Classes with `@InsecureForDeserialization` annotation would be skipped in serialization or deserialization.

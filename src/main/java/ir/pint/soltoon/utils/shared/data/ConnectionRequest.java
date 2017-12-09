@@ -1,8 +1,5 @@
 package ir.pint.soltoon.utils.shared.data;
 
-import ir.pint.soltoon.utils.shared.facades.json.Secure;
-
-@Secure
 public final class ConnectionRequest {
     private String password;
 

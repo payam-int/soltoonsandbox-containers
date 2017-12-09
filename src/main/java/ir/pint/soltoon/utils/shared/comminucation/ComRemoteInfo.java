@@ -1,10 +1,7 @@
 package ir.pint.soltoon.utils.shared.comminucation;
 
-import ir.pint.soltoon.utils.shared.facades.json.Secure;
-
 import java.util.ArrayList;
 
-@Secure
 public class ComRemoteInfo {
     private String name;
     private String displayName;

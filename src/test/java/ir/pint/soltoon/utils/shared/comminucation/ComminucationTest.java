@@ -1,8 +1,6 @@
 package ir.pint.soltoon.utils.shared.comminucation;
 
 import ir.pint.soltoon.utils.shared.exceptions.NoComRemoteAvailable;
-import ir.pint.soltoon.utils.shared.facades.json.Secure;
-import ir.pint.soltoon.utils.shared.facades.json.SecureJsonTest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -12,7 +10,6 @@ import java.io.*;
 import java.net.SocketTimeoutException;
 
 public class ComminucationTest {
-    @Secure
     public static class Data {
         private String text = "hello";
 

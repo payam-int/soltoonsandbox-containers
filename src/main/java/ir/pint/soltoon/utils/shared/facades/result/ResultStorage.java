@@ -2,6 +2,7 @@ package ir.pint.soltoon.utils.shared.facades.result;
 
 import com.google.gson.Gson;
 import ir.pint.soltoon.utils.shared.exceptions.EnvironmentVariableNotFound;
+import ir.pint.soltoon.utils.shared.facades.json.DeSerializer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -162,7 +163,7 @@ public class ResultStorage {
 
     public static String serialze() {
         ResultObject resultObject = new ResultObject(exceptions, events, metas, misc, resultCode);
-        return new Gson().toJson(resultObject);
+        return DeSerializer.serialize(resultObject);
     }
 
     public static void setOutputStream(OutputStream outputStream) {

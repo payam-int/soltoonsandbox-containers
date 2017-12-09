@@ -1,6 +1,6 @@
 package ir.pint.soltoon.utils.shared.comminucation;
 
-import ir.pint.soltoon.utils.shared.facades.json.SecureJson;
+import ir.pint.soltoon.utils.shared.facades.json.DeSerializer;
 
 import java.io.*;
 
@@ -15,7 +15,7 @@ public class ComOutputStream extends DataOutputStream implements ObjectOutput {
 
     @Override
     public void writeObject(Object o) throws IOException {
-        String encode = SecureJson.encode(o);
+        String encode = DeSerializer.serialize(o);
         if (DEBUG)
             System.out.println("O# " + encode);
 
