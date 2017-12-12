@@ -4,6 +4,7 @@
 
 ## About this document
 This document was written on December 9, 2017.
+
 Authors:
 * Payam Mohammadi (@payam-int)
 ## Configuration
@@ -15,7 +16,7 @@ Authors:
 | PASSWORD | Client | - | `any string`
 | CLIENTS | Server | - | `host:port/password, host:port/password, ...` |
 
-## build
+## Build
 For ease of build, you can use `with-dependency` jar.
 
 ## How this helps you
@@ -64,7 +65,7 @@ Object o = connect.getObjectInputStream().readObject(1000);
 ```
 
 ### Serialization/Deserialization
-It uses SecureJson to serialize and deserialize objects.
+It uses DeSerializer to serialize and deserialize objects.
 
 ## Time limitations
 ### Time-Aware Beans

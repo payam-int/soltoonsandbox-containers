@@ -6,6 +6,7 @@ import ir.pint.gsonfire.PostProcessor;
 import ir.pint.gsonfire.TypeSelector;
 
 import java.lang.reflect.Method;
+import java.util.Map;
 
 public class DeSerializer {
     private static final Gson gson;
@@ -32,7 +33,7 @@ public class DeSerializer {
                         if (objectToSerialize == null)
                             return;
 
-                        if (jsonElement.isJsonObject()) {
+                        if (jsonElement.isJsonObject() && !Map.class.isAssignableFrom(objectToSerialize.getClass())) {
                             Class objectClass = objectToSerialize.getClass();
                             jsonElement.getAsJsonObject().addProperty("_class", objectClass.getName());
                         }

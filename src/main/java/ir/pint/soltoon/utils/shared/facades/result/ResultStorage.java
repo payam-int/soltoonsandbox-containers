@@ -57,14 +57,18 @@ public class ResultStorage {
     }
 
     public static void addException(Exception e) {
-        exceptions.add(e);
+        synchronized (exceptions) {
+            exceptions.add(e);
+        }
         for (ResultHandler resultHandler : resultHandlers)
             resultHandler.addException(e);
     }
 
     public static void addEvent(EventLog eventLog) {
         eventLog.setCreateTimestamp(System.currentTimeMillis());
-        events.add(eventLog);
+        synchronized (events) {
+            events.add(eventLog);
+        }
 
         for (ResultHandler resultHandler : resultHandlers)
             resultHandler.addEvent(eventLog);
@@ -72,16 +76,20 @@ public class ResultStorage {
 
 
     public static void addMeta(MetaLog metaLog) {
-        metas.add(metaLog);
+        synchronized (metas) {
+            metas.add(metaLog);
+        }
         for (ResultHandler resultHandler : resultHandlers)
             resultHandler.addMeta(metaLog);
     }
 
     public static void putMisc(String key, Object value) {
-        misc.put(key, value);
-
+        synchronized (misc) {
+            misc.put(key, value);
+        }
         for (ResultHandler resultHandler : resultHandlers)
             resultHandler.putMisc(key, value);
+
     }
 
     public static Object getMisc(String key, Object defaultValue) {
