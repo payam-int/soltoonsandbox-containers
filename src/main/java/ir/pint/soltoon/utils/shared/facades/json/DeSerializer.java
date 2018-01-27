@@ -19,8 +19,11 @@ public class DeSerializer {
                     public void postDeserialize(Object deserializedObject, JsonElement jsonElement, Gson gson) {
                         if (deserializedObject != null) {
                             try {
-                                Method afterDeserialze = deserializedObject.getClass().getMethod("afterDeserialize");
+                                Method afterDeserialze = deserializedObject.getClass().getDeclaredMethod("afterDeserialize");
                                 if (afterDeserialze != null) {
+                                    if (!afterDeserialze.isAccessible())
+                                        afterDeserialze.setAccessible(true);
+
                                     afterDeserialze.invoke(deserializedObject);
                                 }
                             } catch (Exception e) {
@@ -33,7 +36,7 @@ public class DeSerializer {
                         if (objectToSerialize == null)
                             return;
 
-                        if (jsonElement.isJsonObject() && !Map.class.isAssignableFrom(objectToSerialize.getClass())) {
+                        if (jsonElement.isJsonObject() && !objectToSerialize.getClass().isAnnotationPresent(NoTypeInSerialization.class) && !Map.class.isAssignableFrom(objectToSerialize.getClass())) {
                             Class objectClass = objectToSerialize.getClass();
                             jsonElement.getAsJsonObject().addProperty("_class", objectClass.getName());
                         }

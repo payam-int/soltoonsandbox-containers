@@ -8,6 +8,7 @@ public class ComRemoteInfo {
     private String host;
     private int port;
     private String password;
+    private String tag;
 
     public ComRemoteInfo() {
     }
@@ -24,6 +25,15 @@ public class ComRemoteInfo {
         this.host = host;
         this.port = port;
         this.password = password;
+    }
+
+    public ComRemoteInfo(String name, String displayName, String host, int port, String password, String tag) {
+        this.name = name;
+        this.displayName = displayName;
+        this.host = host;
+        this.port = port;
+        this.password = password;
+        this.tag = tag;
     }
 
     public static ArrayList<ComRemoteInfo> createFromEnv() {
@@ -82,5 +92,13 @@ public class ComRemoteInfo {
 
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }
